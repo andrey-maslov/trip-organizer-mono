@@ -31,8 +31,8 @@ export const TripModal: React.FC<TripModalProps> = ({
       .then((values: TripValues) => {
         form.resetFields();
 
-        const start = values.dateStart ? values.dateStart.toString() : null;
-        const end = values.dateEnd ? values.dateEnd.toString() : null;
+        const start = values.dateTimeStart ? values.dateTimeStart.toString() : null;
+        const end = values.dateTimeEnd ? values.dateTimeEnd.toString() : null;
 
         // console.log(dateStart)
         const dataToSave = { ...values, dateStart: start, dateEnd: end }
@@ -63,8 +63,8 @@ export const TripModal: React.FC<TripModalProps> = ({
         name="form_in_modal"
         initialValues={{
           ...initialData,
-          dateStart: dayjs(initialData?.dateStart),
-          dateEnd: dayjs(initialData?.dateEnd),
+          dateTimeStart: dayjs(initialData?.dateTimeStart),
+          dateTimeEnd: dayjs(initialData?.dateTimeEnd),
         }}
       >
         <Form.Item
@@ -82,12 +82,12 @@ export const TripModal: React.FC<TripModalProps> = ({
 
         <Row gutter={FORM_GUTTER}>
           <Col span={12}>
-            <Form.Item name="dateStart" label="Journey start date">
+            <Form.Item name="dateTimeStart" label="Journey start date">
               <DatePicker />
             </Form.Item>
           </Col>
           <Col span={12}>
-            <Form.Item name="dateEnd" label="Journey end date">
+            <Form.Item name="dateTimeEnd" label="Journey end date">
               <DatePicker />
             </Form.Item>
           </Col>

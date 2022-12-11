@@ -1,5 +1,5 @@
 import { ColumnsType } from 'antd/es/table';
-import { Section, Status, Transport } from '@common/libs/models/models';
+import { Section, Status } from '@common/libs/models/models';
 import * as dayjs from 'dayjs';
 import { Button, Popconfirm, Tag, Typography } from 'antd';
 import React from 'react';
@@ -11,18 +11,22 @@ import {
   FaRoad,
   FaTrain,
   FaTrashAlt,
+  FaHotel
 } from 'react-icons/fa';
 import { ImAirplane } from 'react-icons/im';
 import styles from './trip-table.module.scss';
 import { getHumanizedTimeDuration } from '../../../../../libs/helpers/helpers';
+import {PlacementType, TransportType} from "../../../../../libs/models/models";
 
 const { Title } = Typography;
 
-export const transportIcons: Record<Transport, JSX.Element> = {
+export const approachIcons: Record<TransportType | PlacementType, JSX.Element> = {
   bus: <FaBus />,
   aircraft: <ImAirplane />,
   train: <FaTrain />,
   car: <FaCarSide />,
+  hotel: <FaHotel />,
+  flat: <FaHotel />,
   default: <FaRoad />,
 };
 
@@ -32,6 +36,7 @@ const statusMap: Record<Status, string> = {
   to_buy: 'orange',
   to_find: 'red',
   in_progress: 'blue',
+  reserved: 'blue',
 };
 
 // Render cells in the table row
@@ -46,27 +51,29 @@ export const getColumns = (
       key: 'index',
     },
     {
-      title: 'Route',
+      title: 'Journey part name',
       dataIndex: 'name',
       key: 'name',
       render: (_, { name }) => <Title level={5}>{name}</Title>,
     },
     {
-      title: 'Transport',
+      title: 'Transport or placement',
       dataIndex: 'transport',
       key: 'transport',
-      render: (_, { transport, carrier }) => {
-        return transport !== null ? (
+      render: (_, { type, transportType, placementType, serviceProvider }) => {
+        const approachType = type === 'road' ? (transportType || 'default') : (placementType || 'default');
+
+        return transportType !== null ? (
           <div className={styles.transport}>
-            <div className={styles.icon}>{transportIcons[transport]}</div>
+            <div className={styles.icon}>{approachIcons[approachType]}</div>
             <div>
-              <div>{transport}</div>
-              {carrier?.link ? (
-                <Link href={carrier.link} target={'_blank'}>
-                  {carrier.name}
+              <div>{approachType}</div>
+              {serviceProvider?.link ? (
+                <Link href={serviceProvider.link} target={'_blank'}>
+                  {serviceProvider.name}
                 </Link>
               ) : (
-                <div>{carrier?.name}</div>
+                <div>{serviceProvider?.name}</div>
               )}
             </div>
           </div>
@@ -77,7 +84,7 @@ export const getColumns = (
       title: 'Start Date',
       dataIndex: 'start',
       key: 'start',
-      render: (_, { start }) => {
+      render: (_, { dateTimeStart: start }) => {
         return <div>{dayjs(start).isValid() ? dayjs(start).format('DD MMM YYYY') : '-'}</div>;
       },
     },
@@ -85,7 +92,7 @@ export const getColumns = (
       title: 'Duration',
       dataIndex: 'duration',
       key: 'duration',
-      render: (_, { start, end }) => {
+      render: (_, { dateTimeStart: start, dateTimeEnd: end }) => {
         const formattedHumanizedDiff = getHumanizedTimeDuration(start, end);
         return (
           <div>{formattedHumanizedDiff || '-' }</div>
@@ -106,22 +113,22 @@ export const getColumns = (
       },
     },
     {
-      title: 'Tickets',
-      dataIndex: 'tickets',
-      key: 'tickets',
-      render: (_, { tickets }) => {
+      title: 'Payments',
+      dataIndex: 'payments',
+      key: 'payments',
+      render: (_, { payments }) => {
         return (
           <div>
-            {tickets &&
-              tickets.map((ticket, i) =>
-                ticket.link ? (
-                  <div key={ticket.name}>
-                    <Link href={ticket.link}>
-                      {ticket.name || `Ticket ${i}`} <FaExternalLinkAlt />
+            {payments &&
+              payments.map((payment, i) =>
+                payment.link ? (
+                  <div key={payment.name}>
+                    <Link href={payment.link}>
+                      {payment.name || `Payment ${i}`} <FaExternalLinkAlt />
                     </Link>
                   </div>
                 ) : (
-                  <div key={ticket.name}>{ticket.name || `Ticket ${i}`}</div>
+                  <div key={payment.name}>{payment.name || `Payment ${i}`}</div>
                 )
               )}
           </div>
@@ -129,16 +136,16 @@ export const getColumns = (
       },
     },
     {
-      title: 'Common Price',
+      title: 'Total Price',
       dataIndex: 'price',
       key: 'price',
-      render: (_, { tickets }) => {
-        if (tickets && tickets.length > 0) {
-          const ticketCommonPrice = tickets
-            .map((ticket) => ticket.price?.amount || 0)
+      render: (_, { payments }) => {
+        if (payments && payments.length > 0) {
+          const paymentTotalAmount = payments
+            .map((payment) => payment.price?.amount || 0)
             .reduce((a, b) => a + b);
 
-          return <div>{ticketCommonPrice}</div>;
+          return <div>{paymentTotalAmount}</div>;
         } else {
           return <div>-</div>;
         }

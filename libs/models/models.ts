@@ -1,7 +1,15 @@
+import {
+  currencyISONameList,
+  placementTypeList,
+  sectionTypesList,
+  statusTypesList,
+  transportTypesList,
+} from '../../apps/frontend/src/constants/system.constants';
+
 export type TripType = {
   name: string;
-  dateStart: string | null;
-  dateEnd: string | null;
+  dateTimeStart: string | null;
+  dateTimeEnd: string | null;
   description: string;
   sections: Section[];
   _id: string;
@@ -9,14 +17,15 @@ export type TripType = {
 
 export type Section = {
   name: string;
-  pointStart: GeoPoint | null;
-  pointEnd: GeoPoint | null;
-  start: string | null;
-  end: string | null;
-  transport: Transport | null;
-  carrier: Carrier | null;
+  type: SectionType;
+  points: [GeoPoint];
+  dateTimeStart: string | null;
+  dateTimeEnd: string | null;
+  placementType: PlacementType | null;
+  transportType: TransportType | null;
+  serviceProvider: ServiceProvider | null;
   status: Status;
-  tickets: Ticket[] | null;
+  payments: Payment[] | null;
   notes: string;
   _id: string;
 };
@@ -27,18 +36,18 @@ export type GeoPoint = {
   country: string | null;
 };
 
-export const transportTypesList = ['bus', 'aircraft', 'train', 'car', 'default'] as const;
-export type Transport = typeof transportTypesList[number];
+export type TransportType = typeof transportTypesList[number];
+export type Status = typeof statusTypesList[number];
+export type SectionType = typeof sectionTypesList[number];
+export type PlacementType = typeof placementTypeList[number];
+export type CurrencyISOName = typeof currencyISONameList[number];
 
-export type Carrier = {
+export type ServiceProvider = {
   name: string;
   link: string | null;
 };
 
-export const statusTypesList = ['bought', 'to_buy', 'to_find', 'in_progress', 'done'] as const;
-export type Status = typeof statusTypesList[number];
-
-export type Ticket = {
+export type Payment = {
   name: string;
   link?: string | null;
   price?: {
@@ -46,6 +55,3 @@ export type Ticket = {
     currency: CurrencyISOName;
   };
 };
-
-export const currencyISONameList = ['USD', 'EUR', 'BYN'] as const;
-export type CurrencyISOName = typeof currencyISONameList[number];

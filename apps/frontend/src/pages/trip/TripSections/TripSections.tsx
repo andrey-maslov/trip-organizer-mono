@@ -5,15 +5,12 @@ import {
   TripSectionModal,
   TripSectionValues,
 } from '../TripSectionModal/TripSectionModal';
-import {
-  currencyISONameList,
-  Section,
-  TripType,
-} from '../../../../../../libs/models/models';
+import { Section, TripType } from '../../../../../../libs/models/models';
 import styles from '../trip-table.module.scss';
 import { getTotalTicketsAmount } from '../../../../../../libs/helpers/helpers';
 import { useMutation, useQueryClient } from 'react-query';
 import { updateTrip } from '../../../api/apiTrips';
+import { currencyISONameList } from '../../../constants/system.constants';
 
 const { Title } = Typography;
 

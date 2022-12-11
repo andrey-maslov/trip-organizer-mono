@@ -11,15 +11,16 @@ import {
   Space,
   Button,
 } from 'antd';
-import {
-  transportTypesList,
-  statusTypesList,
-  Section,
-  currencyISONameList,
-} from '../../../../../../libs/models/models';
+import { Section } from '../../../../../../libs/models/models';
 import { AiOutlineMinusCircle } from 'react-icons/ai';
 import { FORM_GUTTER } from '../../../constants/interface.constants';
-import * as dayjs from "dayjs";
+import * as dayjs from 'dayjs';
+import {
+  currencyISONameList,
+  sectionTypesList,
+  statusTypesList,
+  transportTypesList,
+} from '../../../constants/system.constants';
 
 const { RangePicker } = DatePicker;
 const { Title } = Typography;
@@ -54,18 +55,20 @@ export const TripSectionModal: React.FC<TripSectionModalProps> = ({
         form.resetFields();
 
         const rangeTimeValue: RangeTime | undefined = values?.rangeTime;
-        let start: string | null = null;
-        let end: string | null = null;
 
-        if (Array.isArray(rangeTimeValue) && rangeTimeValue.length === 2) {
-          start = rangeTimeValue[0]?.toISOString() || null; // 2022-11-29T16:32:33.043Z
-          end = rangeTimeValue[0]?.toISOString() || null; // 2022-11-29T16:32:33.043Z
-        }
+        // stringified view like 2022-11-29T16:32:33.043Z;
+        const dateTimeStart = rangeTimeValue?.[0]?.toISOString() || null;
+        const dateTimeEnd = rangeTimeValue?.[0]?.toISOString() || null;
 
         if (initialData?._id) {
-          onCreate({ ...values, start, end, _id: initialData._id});
+          onCreate({
+            ...values,
+            dateTimeStart,
+            dateTimeEnd,
+            _id: initialData._id,
+          });
         } else {
-          onCreate({ ...values, start, end });
+          onCreate({ ...values, dateTimeStart, dateTimeEnd });
         }
       })
       .catch((info) => {
@@ -76,7 +79,9 @@ export const TripSectionModal: React.FC<TripSectionModalProps> = ({
   return (
     <Modal
       open={open}
-      title={initialData?._id ? 'Update this section' : 'Create a new trip section'}
+      title={
+        initialData?._id ? 'Update this section' : 'Create a new trip section'
+      }
       okText={initialData?._id ? 'Update' : 'Create'}
       cancelText="Cancel"
       onCancel={onCancel}
@@ -89,13 +94,13 @@ export const TripSectionModal: React.FC<TripSectionModalProps> = ({
         initialValues={{
           ...initialData,
           rangeTime: [
-            initialData?.start ? dayjs(initialData.start) : null,
-            initialData?.end ? dayjs(initialData.end) : null,
-          ]
+            dayjs(initialData?.dateTimeStart) || null,
+            dayjs(initialData?.dateTimeEnd) || null,
+          ],
         }}
       >
         <Row gutter={FORM_GUTTER}>
-          <Col span={17}>
+          <Col span={12}>
             <Form.Item
               name="name"
               label="Section name"
@@ -109,10 +114,21 @@ export const TripSectionModal: React.FC<TripSectionModalProps> = ({
               <Input />
             </Form.Item>
           </Col>
-          <Col span={7}>
-            <Form.Item name="status" label="Section status" hasFeedback>
-              <Select placeholder="Please select section status">
-                {statusTypesList.map((type) => (
+
+          <Col span={6}>
+            <Form.Item
+              name="type"
+              label="Section type"
+              hasFeedback
+              rules={[
+                {
+                  required: true,
+                  message: 'Please input the Section type!',
+                },
+              ]}
+            >
+              <Select placeholder="Please select section type">
+                {sectionTypesList.map((type) => (
                   <Select.Option key={type} value={type}>
                     {type}
                   </Select.Option>
@@ -120,33 +136,16 @@ export const TripSectionModal: React.FC<TripSectionModalProps> = ({
               </Select>
             </Form.Item>
           </Col>
-        </Row>
 
-        <Row gutter={FORM_GUTTER}>
-          <Col span={12}>
-            <Form.Item name={['pointStart', 'name']} label="Start point name">
-              <Input />
-            </Form.Item>
-          </Col>
-          <Col span={12}>
-            <Form.Item
-              name={['pointStart', 'country']}
-              label="Start point country"
-            >
-              <Input />
-            </Form.Item>
-          </Col>
-        </Row>
-
-        <Row gutter={FORM_GUTTER}>
-          <Col span={12}>
-            <Form.Item name={['pointEnd', 'name']} label="End point name">
-              <Input />
-            </Form.Item>
-          </Col>
-          <Col span={12}>
-            <Form.Item name={['pointEnd', 'country']} label="End point country">
-              <Input />
+          <Col span={6}>
+            <Form.Item name="status" label="Section status" hasFeedback>
+              <Select placeholder="Please select section status">
+                {statusTypesList.map((status) => (
+                  <Select.Option key={status} value={status}>
+                    {status.replace('_', ' ')}
+                  </Select.Option>
+                ))}
+              </Select>
             </Form.Item>
           </Col>
         </Row>
@@ -159,8 +158,40 @@ export const TripSectionModal: React.FC<TripSectionModalProps> = ({
           <RangePicker showTime format="YYYY-MM-DD HH:mm" />
         </Form.Item>
 
+        <Title level={5}>Geo points</Title>
+        <Form.List name="points">
+          {(fields, { add, remove }) => (
+            <>
+              {fields.map(({ key, name, ...restField }) => {
+                return (
+                  <Space
+                    key={key}
+                    style={{ display: 'flex', marginBottom: 8 }}
+                    align="baseline"
+                  >
+                    <span>Point&nbsp;{key + 1}</span>
+                    <Form.Item {...restField} name={[name, 'name']}>
+                      <Input placeholder="Name" />
+                    </Form.Item>
+                    <Form.Item {...restField} name={[name, 'country']}>
+                      <Input placeholder="Country" />
+                    </Form.Item>
+                    <AiOutlineMinusCircle onClick={() => remove(name)} />
+                  </Space>
+                );
+              })}
+              <Form.Item>
+                <Button type="dashed" onClick={() => add()} block>
+                  + Add geo point
+                </Button>
+              </Form.Item>
+            </>
+          )}
+        </Form.List>
+
         <Row gutter={FORM_GUTTER}>
           <Col span={6}>
+            {/* TODO render label and options conditionally */}
             <Form.Item name="transport" label="Transport type" hasFeedback>
               <Select placeholder="Please select a transport type">
                 {transportTypesList.map((type) => (
@@ -172,19 +203,25 @@ export const TripSectionModal: React.FC<TripSectionModalProps> = ({
             </Form.Item>
           </Col>
           <Col span={9}>
-            <Form.Item name={['carrier', 'name']} label="Carrier name">
+            <Form.Item
+              name={['serviceProvider', 'name']}
+              label="Service provider name"
+            >
               <Input />
             </Form.Item>
           </Col>
           <Col span={9}>
-            <Form.Item name={['carrier', 'link']} label="Carrier link">
+            <Form.Item
+              name={['serviceProvider', 'link']}
+              label="Service provider link"
+            >
               <Input />
             </Form.Item>
           </Col>
         </Row>
 
-        <Title level={5}>Tickets</Title>
-        <Form.List name="tickets">
+        <Title level={5}>Payments</Title>
+        <Form.List name="payments">
           {(fields, { add, remove }) => (
             <>
               {fields.map(({ key, name, ...restField }) => {
@@ -194,7 +231,7 @@ export const TripSectionModal: React.FC<TripSectionModalProps> = ({
                     style={{ display: 'flex', marginBottom: 8 }}
                     align="baseline"
                   >
-                    <span>T&nbsp;{key + 1}</span>
+                    <span>P&nbsp;{key + 1}</span>
                     <Form.Item {...restField} name={[name, 'name']}>
                       <Input placeholder="Name" />
                     </Form.Item>
@@ -219,7 +256,7 @@ export const TripSectionModal: React.FC<TripSectionModalProps> = ({
               })}
               <Form.Item>
                 <Button type="dashed" onClick={() => add()} block>
-                  + Add ticket
+                  + Add payment
                 </Button>
               </Form.Item>
             </>
