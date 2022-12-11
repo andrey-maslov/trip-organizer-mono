@@ -1,0 +1,21 @@
+.transport {
+  display: flex;
+  align-items: center;
+}
+
+.icon {
+  margin-right: 10px;
+
+  svg {
+    font-size: 30px;
+    color: rgba(0,0,0,.4)
+  }
+}
+
+.table {
+  margin-bottom: 20px;
+}
+
+//.buttons {
+//  margin-bottom: 30px;
+//}

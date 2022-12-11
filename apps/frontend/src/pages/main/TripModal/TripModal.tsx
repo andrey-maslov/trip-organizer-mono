@@ -1,0 +1,102 @@
+import React from 'react';
+import * as dayjs from 'dayjs';
+import { Form, Input, Modal, DatePicker, Row, Col } from 'antd';
+import { TripType } from '../../../../../../libs/models/models';
+import { FORM_GUTTER } from '../../../constants/interface.constants';
+
+const { TextArea } = Input;
+
+export type TripValues = TripType;
+
+export type TripModalProps = {
+  open: boolean;
+  initialData?: TripValues;
+  onCreate: (values: TripValues) => void;
+  onUpdate: (values: TripValues) => void;
+  onCancel: () => void;
+};
+
+export const TripModal: React.FC<TripModalProps> = ({
+  open,
+  initialData,
+  onCreate,
+  onUpdate,
+  onCancel,
+}) => {
+  const [form] = Form.useForm();
+
+  const onSetTripData = () => {
+    form
+      .validateFields()
+      .then((values: TripValues) => {
+        form.resetFields();
+
+        const start = values.dateStart ? values.dateStart.toString() : null;
+        const end = values.dateEnd ? values.dateEnd.toString() : null;
+
+        // console.log(dateStart)
+        const dataToSave = { ...values, dateStart: start, dateEnd: end }
+
+        if (initialData?._id) {
+          onUpdate({ ...dataToSave, _id: initialData._id});
+        } else {
+          onCreate(dataToSave);
+        }
+      })
+      .catch((info) => {
+        console.log('Validate Failed:', info);
+      });
+  };
+
+  return (
+    <Modal
+      open={open}
+      title={initialData?._id ? 'Update this journey' : 'Create a new journey'}
+      okText={initialData?._id ? 'Update' : 'Create'}
+      cancelText="Cancel"
+      onCancel={onCancel}
+      onOk={onSetTripData}
+    >
+      <Form
+        form={form}
+        layout="vertical"
+        name="form_in_modal"
+        initialValues={{
+          ...initialData,
+          dateStart: dayjs(initialData?.dateStart),
+          dateEnd: dayjs(initialData?.dateEnd),
+        }}
+      >
+        <Form.Item
+          name="name"
+          label="Section name"
+          rules={[
+            {
+              required: true,
+              message: 'Please input the Section name!',
+            },
+          ]}
+        >
+          <Input />
+        </Form.Item>
+
+        <Row gutter={FORM_GUTTER}>
+          <Col span={12}>
+            <Form.Item name="dateStart" label="Journey start date">
+              <DatePicker />
+            </Form.Item>
+          </Col>
+          <Col span={12}>
+            <Form.Item name="dateEnd" label="Journey end date">
+              <DatePicker />
+            </Form.Item>
+          </Col>
+        </Row>
+
+        <Form.Item name="description" label="Description">
+          <TextArea rows={4} />
+        </Form.Item>
+      </Form>
+    </Modal>
+  );
+};

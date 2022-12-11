@@ -19,3 +19,29 @@ Run `npx nx connect-to-nx-cloud` to enable [remote caching](https://nx.app) and 
 ## Further help
 
 Visit the [Nx Documentation](https://nx.dev) to learn more.
+
+## MongoDB
+### Start locally (for development)
+start: ```brew services start mongodb-community@6.0```
+
+stop: ```brew services stop mongodb-community@6.0```
+
+check if started: ```brew services list```
+
+To connect and Use MongoDB open new terminal and run ```mongosh```. Then you can use this CLI or Compass
+
+[Documentation (MacOS)](https://www.mongodb.com/docs/manual/tutorial/install-mongodb-on-os-x/)
+
+## Useful links
+[Video about NX.js](https://www.youtube.com/watch?v=VUyBY72mwrQ)
+[Video about NX.js 2](https://www.youtube.com/watch?v=1eHlaVoeDfU)
+
+[Building Full-Stack React Applications in a Monorepo](https://blog.nrwl.io/building-full-stack-react-applications-in-a-monorepo-7dfa1714b988)
+
+[Пишем продвинутый планировщик с использованием React, Nest и NX. Часть 1: настройка проекта](https://habr.com/ru/company/domclick/blog/672546/)
+
+[Пишем продвинутый планировщик с использованием React, Nest и NX. Часть 2: аутентификация](https://habr.com/ru/company/domclick/blog/687106/)
+
+[React Query full guide](https://my-js.org/docs/guide/react-query/)
+
+[React Query TS](https://tkdodo.eu/blog/react-query-and-type-script)
