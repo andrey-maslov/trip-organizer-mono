@@ -21,8 +21,8 @@ export type Section = {
   points: [GeoPoint];
   dateTimeStart: string | null;
   dateTimeEnd: string | null;
-  placementType: PlacementType | null;
   transportType: TransportType | null;
+  placementType: PlacementType | null;
   serviceProvider: ServiceProvider | null;
   status: Status;
   payments: Payment[] | null;
@@ -32,7 +32,7 @@ export type Section = {
 
 export type GeoPoint = {
   name: string;
-  coords: string | null;
+  coords?: string | null;
   country: string | null;
 };
 

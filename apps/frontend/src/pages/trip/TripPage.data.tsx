@@ -1,34 +1,41 @@
 import { ColumnsType } from 'antd/es/table';
-import { Section, Status } from '@common/libs/models/models';
 import * as dayjs from 'dayjs';
 import { Button, Popconfirm, Tag, Typography } from 'antd';
 import React from 'react';
-import Link from 'antd/es/typography/Link';
 import {
   FaBus,
   FaCarSide,
-  FaExternalLinkAlt, FaRegEdit,
+  FaExternalLinkAlt,
+  FaRegEdit,
   FaRoad,
+  FaQuestion,
   FaTrain,
   FaTrashAlt,
-  FaHotel
+  FaHotel,
 } from 'react-icons/fa';
 import { ImAirplane } from 'react-icons/im';
 import styles from './trip-table.module.scss';
 import { getHumanizedTimeDuration } from '../../../../../libs/helpers/helpers';
-import {PlacementType, TransportType} from "../../../../../libs/models/models";
+import {
+  PlacementType,
+  Section,
+  Status,
+  TransportType,
+} from '../../../../../libs/models/models';
+import { DEFAULT_SECTION_STATUS } from '../../constants/system.constants';
 
 const { Title } = Typography;
 
-export const approachIcons: Record<TransportType | PlacementType, JSX.Element> = {
-  bus: <FaBus />,
-  aircraft: <ImAirplane />,
-  train: <FaTrain />,
-  car: <FaCarSide />,
-  hotel: <FaHotel />,
-  flat: <FaHotel />,
-  default: <FaRoad />,
-};
+export const approachIcons: Record<TransportType | PlacementType, JSX.Element> =
+  {
+    bus: <FaBus />,
+    aircraft: <ImAirplane />,
+    train: <FaTrain />,
+    car: <FaCarSide />,
+    hotel: <FaHotel />,
+    flat: <FaHotel />,
+    unknown: <FaQuestion />,
+  };
 
 const statusMap: Record<Status, string> = {
   bought: 'green',
@@ -61,7 +68,10 @@ export const getColumns = (
       dataIndex: 'transport',
       key: 'transport',
       render: (_, { type, transportType, placementType, serviceProvider }) => {
-        const approachType = type === 'road' ? (transportType || 'default') : (placementType || 'default');
+        const approachType =
+          type === 'road'
+            ? transportType || 'unknown'
+            : placementType || 'unknown';
 
         return transportType !== null ? (
           <div className={styles.transport}>
@@ -69,15 +79,21 @@ export const getColumns = (
             <div>
               <div>{approachType}</div>
               {serviceProvider?.link ? (
-                <Link href={serviceProvider.link} target={'_blank'}>
+                <a
+                  href={serviceProvider.link}
+                  target={'_blank'}
+                  rel="noreferrer"
+                >
                   {serviceProvider.name}
-                </Link>
+                </a>
               ) : (
                 <div>{serviceProvider?.name}</div>
               )}
             </div>
           </div>
-        ) : <div>-</div>;
+        ) : (
+          <div>-</div>
+        );
       },
     },
     {
@@ -85,18 +101,23 @@ export const getColumns = (
       dataIndex: 'start',
       key: 'start',
       render: (_, { dateTimeStart: start }) => {
-        return <div>{dayjs(start).isValid() ? dayjs(start).format('DD MMM YYYY') : '-'}</div>;
+        return (
+          <div>
+            {dayjs(start).isValid() ? dayjs(start).format('DD MMM YYYY') : '-'}
+          </div>
+        );
       },
     },
     {
       title: 'Duration',
       dataIndex: 'duration',
       key: 'duration',
-      render: (_, { dateTimeStart: start, dateTimeEnd: end }) => {
-        const formattedHumanizedDiff = getHumanizedTimeDuration(start, end);
-        return (
-          <div>{formattedHumanizedDiff || '-' }</div>
+      render: (_, { dateTimeStart, dateTimeEnd }) => {
+        const formattedHumanizedDiff = getHumanizedTimeDuration(
+          dateTimeStart,
+          dateTimeEnd
         );
+        return <div>{formattedHumanizedDiff || '-'}</div>;
       },
     },
     {
@@ -107,7 +128,9 @@ export const getColumns = (
         const color = statusMap[status];
         return (
           <Tag color={color}>
-            {status ? status.toUpperCase().replace('_', ' ') : 'default'}
+            {status
+              ? status.toUpperCase().replace('_', ' ')
+              : DEFAULT_SECTION_STATUS}
           </Tag>
         );
       },
@@ -122,13 +145,13 @@ export const getColumns = (
             {payments &&
               payments.map((payment, i) =>
                 payment.link ? (
-                  <div key={payment.name}>
-                    <Link href={payment.link}>
-                      {payment.name || `Payment ${i}`} <FaExternalLinkAlt />
-                    </Link>
+                  <div key={i}>
+                    <a href={payment.link} target={'_blank'} rel="noreferrer">
+                      {payment.name || `-`} <FaExternalLinkAlt />
+                    </a>
                   </div>
                 ) : (
-                  <div key={payment.name}>{payment.name || `Payment ${i}`}</div>
+                  <div key={i}>{payment.name || `-`}</div>
                 )
               )}
           </div>
@@ -161,7 +184,7 @@ export const getColumns = (
       key: 'action',
       render: (_, record) => {
         return (
-          <div>
+          <div className={styles.buttons}>
             <Button
               danger
               style={{ padding: '4px 8px' }}

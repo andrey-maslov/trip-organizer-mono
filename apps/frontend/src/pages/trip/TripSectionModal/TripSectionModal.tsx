@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   Typography,
   Form,
@@ -11,20 +11,38 @@ import {
   Space,
   Button,
 } from 'antd';
-import { Section } from '../../../../../../libs/models/models';
+import { Section, SectionType } from '../../../../../../libs/models/models';
 import { AiOutlineMinusCircle } from 'react-icons/ai';
 import { FORM_GUTTER } from '../../../constants/interface.constants';
 import * as dayjs from 'dayjs';
 import {
   currencyISONameList,
+  DEFAULT_SECTION_STATUS,
+  DEFAULT_SECTION_TYPE,
+  placementTypeList,
   sectionTypesList,
   statusTypesList,
   transportTypesList,
 } from '../../../constants/system.constants';
 
 const { RangePicker } = DatePicker;
-const { Title } = Typography;
+const { Paragraph } = Typography;
 const { TextArea } = Input;
+
+const serviceProviderType: Record<SectionType, Record<string, any>> = {
+  road: {
+    data: transportTypesList,
+    label: 'Transport type',
+    fieldName: 'transportType',
+    placeholder: 'Please select a transport type',
+  },
+  stay: {
+    data: placementTypeList,
+    label: 'Placement type',
+    fieldName: 'placementType',
+    placeholder: 'Please select a placement type',
+  },
+};
 
 const rangeConfig = {
   rules: [{ type: 'array' as const }],
@@ -46,7 +64,16 @@ export const TripSectionModal: React.FC<TripSectionModalProps> = ({
   onCreate,
   onCancel,
 }) => {
+  const [sectionType, setSectionType] = useState(DEFAULT_SECTION_TYPE);
+
   const [form] = Form.useForm();
+
+  const onSectionTypeChange = (value: SectionType) => {
+    if (!sectionTypesList.includes(value)) {
+      return;
+    }
+    setSectionType(value);
+  };
 
   const onSetSectionData = () => {
     form
@@ -54,11 +81,13 @@ export const TripSectionModal: React.FC<TripSectionModalProps> = ({
       .then((values: TripSectionValues) => {
         form.resetFields();
 
+        console.log(values);
+
         const rangeTimeValue: RangeTime | undefined = values?.rangeTime;
 
         // stringified view like 2022-11-29T16:32:33.043Z;
         const dateTimeStart = rangeTimeValue?.[0]?.toISOString() || null;
-        const dateTimeEnd = rangeTimeValue?.[0]?.toISOString() || null;
+        const dateTimeEnd = rangeTimeValue?.[1]?.toISOString() || null;
 
         if (initialData?._id) {
           onCreate({
@@ -76,6 +105,16 @@ export const TripSectionModal: React.FC<TripSectionModalProps> = ({
       });
   };
 
+  const defaultData = {
+    type: DEFAULT_SECTION_TYPE,
+    status: DEFAULT_SECTION_STATUS,
+    ...initialData,
+    rangeTime: [
+      dayjs(initialData?.dateTimeStart) || null,
+      dayjs(initialData?.dateTimeEnd) || null,
+    ],
+  };
+
   return (
     <Modal
       open={open}
@@ -91,13 +130,7 @@ export const TripSectionModal: React.FC<TripSectionModalProps> = ({
         form={form}
         layout="vertical"
         name="form_in_modal"
-        initialValues={{
-          ...initialData,
-          rangeTime: [
-            dayjs(initialData?.dateTimeStart) || null,
-            dayjs(initialData?.dateTimeEnd) || null,
-          ],
-        }}
+        initialValues={defaultData}
       >
         <Row gutter={FORM_GUTTER}>
           <Col span={12}>
@@ -116,18 +149,11 @@ export const TripSectionModal: React.FC<TripSectionModalProps> = ({
           </Col>
 
           <Col span={6}>
-            <Form.Item
-              name="type"
-              label="Section type"
-              hasFeedback
-              rules={[
-                {
-                  required: true,
-                  message: 'Please input the Section type!',
-                },
-              ]}
-            >
-              <Select placeholder="Please select section type">
+            <Form.Item name="type" label="Section type" hasFeedback>
+              <Select
+                placeholder="Please select section type"
+                onChange={onSectionTypeChange}
+              >
                 {sectionTypesList.map((type) => (
                   <Select.Option key={type} value={type}>
                     {type}
@@ -158,7 +184,7 @@ export const TripSectionModal: React.FC<TripSectionModalProps> = ({
           <RangePicker showTime format="YYYY-MM-DD HH:mm" />
         </Form.Item>
 
-        <Title level={5}>Geo points</Title>
+        <Paragraph>Geo points</Paragraph>
         <Form.List name="points">
           {(fields, { add, remove }) => (
             <>
@@ -191,10 +217,15 @@ export const TripSectionModal: React.FC<TripSectionModalProps> = ({
 
         <Row gutter={FORM_GUTTER}>
           <Col span={6}>
-            {/* TODO render label and options conditionally */}
-            <Form.Item name="transport" label="Transport type" hasFeedback>
-              <Select placeholder="Please select a transport type">
-                {transportTypesList.map((type) => (
+            <Form.Item
+              name={serviceProviderType[sectionType].fieldName}
+              label={serviceProviderType[sectionType].label}
+              hasFeedback
+            >
+              <Select
+                placeholder={serviceProviderType[sectionType].placeholder}
+              >
+                {serviceProviderType[sectionType].data.map((type: string) => (
                   <Select.Option key={type} value={type}>
                     {type}
                   </Select.Option>
@@ -202,6 +233,7 @@ export const TripSectionModal: React.FC<TripSectionModalProps> = ({
               </Select>
             </Form.Item>
           </Col>
+
           <Col span={9}>
             <Form.Item
               name={['serviceProvider', 'name']}
@@ -220,7 +252,7 @@ export const TripSectionModal: React.FC<TripSectionModalProps> = ({
           </Col>
         </Row>
 
-        <Title level={5}>Payments</Title>
+        <Paragraph>Payments</Paragraph>
         <Form.List name="payments">
           {(fields, { add, remove }) => (
             <>

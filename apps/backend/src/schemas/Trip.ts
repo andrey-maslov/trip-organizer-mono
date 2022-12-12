@@ -3,8 +3,8 @@ import { SectionSchema } from "./Section";
 
 const TripSchema = new Schema({
   name: { type: String, required: true },
-  dateStart: String,
-  dateEnd: String,
+  dateTimeStart: String,
+  dateTimeEnd: String,
   description: String,
   sections: [SectionSchema],
 });

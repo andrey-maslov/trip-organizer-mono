@@ -47,6 +47,12 @@ export const TripModal: React.FC<TripModalProps> = ({
         console.log('Validate Failed:', info);
       });
   };
+  
+  const defaultData = {
+    ...initialData,
+    dateTimeStart: dayjs(initialData?.dateTimeStart),
+    dateTimeEnd: dayjs(initialData?.dateTimeEnd),
+  }
 
   return (
     <Modal
@@ -61,11 +67,7 @@ export const TripModal: React.FC<TripModalProps> = ({
         form={form}
         layout="vertical"
         name="form_in_modal"
-        initialValues={{
-          ...initialData,
-          dateTimeStart: dayjs(initialData?.dateTimeStart),
-          dateTimeEnd: dayjs(initialData?.dateTimeEnd),
-        }}
+        initialValues={defaultData}
       >
         <Form.Item
           name="name"

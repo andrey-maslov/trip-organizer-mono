@@ -1,17 +1,17 @@
-import { Status } from '../../../../libs/models/models';
+import {SectionType, Status} from '../../../../libs/models/models';
 
 export const transportTypesList = [
   'bus',
   'aircraft',
   'train',
   'car',
-  'default',
+  'unknown',
 ] as const;
 
 export const statusTypesList = [
+  'to_find',
   'bought',
   'to_buy',
-  'to_find',
   'in_progress',
   'done',
   'reserved',
@@ -19,6 +19,7 @@ export const statusTypesList = [
 
 export const sectionTypesList = ['road', 'stay'] as const;
 export const placementTypeList = ['hotel', 'flat'] as const;
-export const currencyISONameList = ['USD', 'EUR', 'BYN'] as const;
+export const currencyISONameList = ['EUR', 'USD', 'PLN', 'BYN'] as const;
 
 export const DEFAULT_SECTION_STATUS: Status = 'to_find';
+export const DEFAULT_SECTION_TYPE: SectionType = 'road';
