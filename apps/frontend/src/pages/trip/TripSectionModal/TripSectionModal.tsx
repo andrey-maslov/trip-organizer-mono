@@ -64,7 +64,7 @@ export const TripSectionModal: React.FC<TripSectionModalProps> = ({
   onCreate,
   onCancel,
 }) => {
-  const [sectionType, setSectionType] = useState(DEFAULT_SECTION_TYPE);
+  const [sectionType, setSectionType] = useState(initialData?.type || DEFAULT_SECTION_TYPE);
 
   const [form] = Form.useForm();
 
@@ -80,8 +80,6 @@ export const TripSectionModal: React.FC<TripSectionModalProps> = ({
       .validateFields()
       .then((values: TripSectionValues) => {
         form.resetFields();
-
-        console.log(values);
 
         const rangeTimeValue: RangeTime | undefined = values?.rangeTime;
 
