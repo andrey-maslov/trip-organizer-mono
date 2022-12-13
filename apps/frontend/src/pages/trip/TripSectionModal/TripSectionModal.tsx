@@ -83,7 +83,7 @@ export const TripSectionModal: React.FC<TripSectionModalProps> = ({
 
         const rangeTimeValue: RangeTime | undefined = values?.rangeTime;
 
-        // stringified view like 2022-11-29T16:32:33.043Z;
+        // stringified view: 2022-11-29T16:32:33.043Z;
         const dateTimeStart = rangeTimeValue?.[0]?.toISOString() || null;
         const dateTimeEnd = rangeTimeValue?.[1]?.toISOString() || null;
 

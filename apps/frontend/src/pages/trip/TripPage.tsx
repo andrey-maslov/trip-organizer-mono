@@ -30,19 +30,14 @@ export const TripPage: React.FC = (): JSX.Element => {
     return <div>This trip doesn't exist</div>;
   }
 
-  const { name, dateStart, dateEnd, description } = trip;
+  const { name, dateTimeStart, dateTimeEnd, description } = trip;
 
   return (
     <>
       <Title>{name}</Title>
       <Paragraph>{description}</Paragraph>
       <Title level={5}>
-        <span>Start: </span>
-        <span>{dayjs(dateStart).format('DD MMM YYYY')}</span>
-      </Title>
-      <Title level={5}>
-        <span>End: </span>
-        <span>{dayjs(dateEnd).format('DD MMM YYYY')}</span>
+        {`From ${dayjs(dateTimeStart).isValid() ? dayjs(dateTimeStart).format('DD MMM YYYY') : '...'} to ${dayjs(dateTimeEnd).isValid() ? dayjs(dateTimeEnd).format('DD MMM YYYY') : '...'}`}
       </Title>
       <Divider />
       <TripSections trip={trip} />

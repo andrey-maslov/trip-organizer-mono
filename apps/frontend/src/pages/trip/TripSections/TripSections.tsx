@@ -1,30 +1,60 @@
 import React, { useState, FC } from 'react';
-import { Button, Divider, Table, Tooltip, Typography } from 'antd';
+import {
+  Button,
+  Divider,
+  Table,
+  Tooltip,
+  Typography,
+  Checkbox,
+  CheckboxOptionType,
+} from 'antd';
+import type { CheckboxValueType } from 'antd/es/checkbox/Group';
+
 import { getColumns } from '../TripPage.data';
 import {
   TripSectionModal,
   TripSectionValues,
 } from '../TripSectionModal/TripSectionModal';
 import { Section, TripType } from '../../../../../../libs/models/models';
-import styles from '../trip-table.module.scss';
+import styles from './trip-sections.module.scss';
 import { getTotalTicketsAmount } from '../../../../../../libs/helpers/helpers';
 import { useMutation, useQueryClient } from 'react-query';
 import { updateTrip } from '../../../api/apiTrips';
-import { currencyISONameList } from '../../../constants/system.constants';
+import {
+  DEFAULT_CURRENCY,
+  sectionTypesList,
+} from '../../../constants/system.constants';
 
 const { Title } = Typography;
+const CheckboxGroup = Checkbox.Group;
+
+const sectionTypeOptions = sectionTypesList as unknown as (
+  | string
+  | number
+  | CheckboxOptionType
+)[];
+const defaultCheckedList = sectionTypeOptions as unknown as CheckboxValueType[];
 
 export type TripSectionsProps = {
   trip: TripType;
 };
 
-const CURRENCY = currencyISONameList[1]; // EUR
-
 export const TripSections: FC<TripSectionsProps> = ({ trip }) => {
   const queryClient = useQueryClient();
 
   const [open, setOpen] = useState(false);
+  const [sectionsToDisplay, setSectionsToDisplay] = useState(trip.sections);
   const [currentSectionId, setCurrentSectionId] = useState('');
+
+  const [checkedList, setCheckedList] =
+    useState<CheckboxValueType[]>(defaultCheckedList);
+
+  const onSectionTypeChange = (list: CheckboxValueType[]) => {
+    setCheckedList(list);
+    setSectionsToDisplay(
+      trip.sections.filter((section) => list.includes(section.type))
+    );
+  };
 
   const addSectionMutation = useMutation(updateTrip, {
     onSuccess: () => {
@@ -59,9 +89,10 @@ export const TripSections: FC<TripSectionsProps> = ({ trip }) => {
     addSectionMutation.mutate({ ...trip, sections: newSections });
   };
 
+  // Get cells structure and render rules with passing 2 callbacks there as buttons click handlers
   const columns = getColumns(onSectionRemove, onUpdateButtonClick);
 
-  const data: Section[] = trip.sections.map((section, index) => ({
+  const data: Section[] = sectionsToDisplay.map((section, index) => ({
     ...section,
     index: ++index,
     key: section.name,
@@ -69,9 +100,22 @@ export const TripSections: FC<TripSectionsProps> = ({ trip }) => {
 
   return (
     <>
-      <div className={styles.table}>
+      <div className={styles.tableWrapper}>
+        <p>Show types only: </p>
+        <CheckboxGroup
+          options={sectionTypeOptions}
+          value={checkedList}
+          onChange={onSectionTypeChange}
+          className={styles.filter}
+        />
+
         {Array.isArray(trip.sections) && trip.sections.length > 0 ? (
-          <Table columns={columns} dataSource={data} pagination={false} />
+          <Table
+            columns={columns}
+            dataSource={data}
+            pagination={false}
+            className={styles.table}
+          />
         ) : (
           <div>
             You have no details of your journey yet. Add the first trip section
@@ -113,7 +157,8 @@ export const TripSections: FC<TripSectionsProps> = ({ trip }) => {
       <div>
         <Title level={4}>Summary</Title>
         <Title level={5}>
-          Total price: {getTotalTicketsAmount(data)} {CURRENCY}
+          Total price {`(${checkedList.join(', ')})`} :{' '}
+          {getTotalTicketsAmount(data)} {DEFAULT_CURRENCY}
         </Title>
       </div>
     </>

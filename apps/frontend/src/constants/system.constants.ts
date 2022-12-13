@@ -1,4 +1,8 @@
-import {SectionType, Status} from '../../../../libs/models/models';
+import {
+  CurrencyISOName,
+  SectionType,
+  Status,
+} from '../../../../libs/models/models';
 
 export const transportTypesList = [
   'bus',
@@ -10,16 +14,37 @@ export const transportTypesList = [
 
 export const statusTypesList = [
   'to_find',
-  'bought',
   'to_buy',
-  'in_progress',
-  'done',
   'reserved',
+  'bought',
+  'in_progress',
+  'passed',
 ] as const;
 
 export const sectionTypesList = ['road', 'stay'] as const;
 export const placementTypeList = ['hotel', 'flat'] as const;
-export const currencyISONameList = ['EUR', 'USD', 'PLN', 'BYN'] as const;
-
 export const DEFAULT_SECTION_STATUS: Status = 'to_find';
+
 export const DEFAULT_SECTION_TYPE: SectionType = 'road';
+
+export const currencyISONameList = ['EUR', 'USD', 'PLN', 'BYN'] as const;
+export const DEFAULT_CURRENCY: CurrencyISOName = 'EUR';
+
+export const currencies: Record<CurrencyISOName, { name: string, symbol: string }> = {
+  EUR: {
+    name: 'Euro',
+    symbol: '€',
+  },
+  USD: {
+    name: 'Dollar USA',
+    symbol: '$',
+  },
+  PLN: {
+    name: 'Polish Zloty',
+    symbol: 'zł',
+  },
+  BYN: {
+    name: 'Belarusian rouble',
+    symbol: 'Br',
+  },
+};

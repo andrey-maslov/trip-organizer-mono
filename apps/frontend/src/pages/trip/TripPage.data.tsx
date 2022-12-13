@@ -14,7 +14,7 @@ import {
   FaHotel,
 } from 'react-icons/fa';
 import { ImAirplane } from 'react-icons/im';
-import styles from './trip-table.module.scss';
+import styles from './trip-page.module.scss';
 import { getHumanizedTimeDuration } from '../../../../../libs/helpers/helpers';
 import {
   PlacementType,
@@ -22,7 +22,11 @@ import {
   Status,
   TransportType,
 } from '../../../../../libs/models/models';
-import { DEFAULT_SECTION_STATUS } from '../../constants/system.constants';
+import {
+  currencies,
+  DEFAULT_CURRENCY,
+  DEFAULT_SECTION_STATUS,
+} from '../../constants/system.constants';
 
 const { Title } = Typography;
 
@@ -39,7 +43,7 @@ export const approachIcons: Record<TransportType | PlacementType, JSX.Element> =
 
 const statusMap: Record<Status, string> = {
   bought: 'green',
-  done: 'green',
+  passed: 'green',
   to_buy: 'orange',
   to_find: 'red',
   in_progress: 'blue',
@@ -56,6 +60,7 @@ export const getColumns = (
       title: 'No.',
       dataIndex: 'index',
       key: 'index',
+      width: 55,
     },
     {
       title: 'Journey part name',
@@ -67,6 +72,7 @@ export const getColumns = (
       title: 'Transport or placement',
       dataIndex: 'transport',
       key: 'transport',
+      width: 190,
       render: (_, { type, transportType, placementType, serviceProvider }) => {
         const approachType =
           type === 'road'
@@ -100,6 +106,7 @@ export const getColumns = (
       title: 'Start Date',
       dataIndex: 'start',
       key: 'start',
+      width: 130,
       render: (_, { dateTimeStart: start }) => {
         return (
           <div>
@@ -112,6 +119,7 @@ export const getColumns = (
       title: 'Duration',
       dataIndex: 'duration',
       key: 'duration',
+      width: 130,
       render: (_, { dateTimeStart, dateTimeEnd }) => {
         const formattedHumanizedDiff = getHumanizedTimeDuration(
           dateTimeStart,
@@ -124,6 +132,7 @@ export const getColumns = (
       title: 'Status',
       dataIndex: 'status',
       key: 'status',
+      width: 130,
       render: (_, { status }) => {
         const color = statusMap[status];
         return (
@@ -162,13 +171,18 @@ export const getColumns = (
       title: 'Total Price',
       dataIndex: 'price',
       key: 'price',
+      width: 110,
       render: (_, { payments }) => {
         if (payments && payments.length > 0) {
           const paymentTotalAmount = payments
             .map((payment) => payment.price?.amount || 0)
             .reduce((a, b) => a + b);
 
-          return <div>{paymentTotalAmount}</div>;
+          return (
+            <div>
+              {paymentTotalAmount}{currencies[DEFAULT_CURRENCY].symbol}
+            </div>
+          );
         } else {
           return <div>-</div>;
         }
@@ -182,6 +196,7 @@ export const getColumns = (
     {
       title: 'Action',
       key: 'action',
+      width: 110,
       render: (_, record) => {
         return (
           <div className={styles.buttons}>
