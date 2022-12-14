@@ -17,6 +17,9 @@
     "jsx": "react-jsx",
     "types": ["vite/client"]
   },
+  "rules": {
+    "typescript-eslint/ban-ts-comment": false
+  },
   "files": [],
   "include": ["src"],
   "references": [

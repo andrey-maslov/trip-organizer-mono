@@ -6,6 +6,7 @@ import { TripSections } from './TripSections/TripSections';
 import { useQuery } from 'react-query';
 import { fetchOneTrip } from '../../api/apiTrips';
 import { TripType } from '../../../../../libs/models/models';
+import { getHumanizedTimeDuration } from '../../../../../libs/helpers/helpers';
 
 const { Title, Paragraph } = Typography;
 
@@ -37,7 +38,15 @@ export const TripPage: React.FC = (): JSX.Element => {
       <Title>{name}</Title>
       <Paragraph>{description}</Paragraph>
       <Title level={5}>
-        {`From ${dayjs(dateTimeStart).isValid() ? dayjs(dateTimeStart).format('DD MMM YYYY') : '...'} to ${dayjs(dateTimeEnd).isValid() ? dayjs(dateTimeEnd).format('DD MMM YYYY') : '...'}`}
+        {`From ${
+          dayjs(dateTimeStart).isValid()
+            ? dayjs(dateTimeStart).format('DD MMM YYYY')
+            : '...'
+        } to ${
+          dayjs(dateTimeEnd).isValid()
+            ? dayjs(dateTimeEnd).format('DD MMM YYYY')
+            : '...'
+        } (${getHumanizedTimeDuration(dateTimeStart, dateTimeEnd)})`}
       </Title>
       <Divider />
       <TripSections trip={trip} />

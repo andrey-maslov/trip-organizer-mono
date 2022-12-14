@@ -17,13 +17,16 @@ import {
 } from '../TripSectionModal/TripSectionModal';
 import { Section, TripType } from '../../../../../../libs/models/models';
 import styles from './trip-sections.module.scss';
-import { getTotalTicketsAmount } from '../../../../../../libs/helpers/helpers';
 import { useMutation, useQueryClient } from 'react-query';
 import { updateTrip } from '../../../api/apiTrips';
 import {
   DEFAULT_CURRENCY,
   sectionTypesList,
 } from '../../../constants/system.constants';
+import {
+  getTotalRoadTime,
+  getTotalTicketsAmount,
+} from '../../../../../../libs/services/TotalValues.service';
 
 const { Title } = Typography;
 const CheckboxGroup = Checkbox.Group;
@@ -43,17 +46,16 @@ export const TripSections: FC<TripSectionsProps> = ({ trip }) => {
   const queryClient = useQueryClient();
 
   const [open, setOpen] = useState(false);
-  const [sectionsToDisplay, setSectionsToDisplay] = useState(trip.sections);
-  const [currentSectionId, setCurrentSectionId] = useState('');
-
   const [checkedList, setCheckedList] =
     useState<CheckboxValueType[]>(defaultCheckedList);
 
+  const [currentSectionId, setCurrentSectionId] = useState('');
+
   const onSectionTypeChange = (list: CheckboxValueType[]) => {
+    if (list.length === 0) {
+      return;
+    }
     setCheckedList(list);
-    setSectionsToDisplay(
-      trip.sections.filter((section) => list.includes(section.type))
-    );
   };
 
   const addSectionMutation = useMutation(updateTrip, {
@@ -92,11 +94,13 @@ export const TripSections: FC<TripSectionsProps> = ({ trip }) => {
   // Get cells structure and render rules with passing 2 callbacks there as buttons click handlers
   const columns = getColumns(onSectionRemove, onUpdateButtonClick);
 
-  const data: Section[] = sectionsToDisplay.map((section, index) => ({
-    ...section,
-    index: ++index,
-    key: section.name,
-  }));
+  const data: Section[] = trip.sections
+    .filter((section) => checkedList.includes(section.type))
+    .map((section, index) => ({
+      ...section,
+      index: ++index,
+      key: section.name,
+    }));
 
   return (
     <>
@@ -159,6 +163,9 @@ export const TripSections: FC<TripSectionsProps> = ({ trip }) => {
         <Title level={5}>
           Total price {`(${checkedList.join(', ')})`} :{' '}
           {getTotalTicketsAmount(data)} {DEFAULT_CURRENCY}
+        </Title>
+        <Title level={5}>
+          Total time {`(${checkedList.join(', ')})`} : {getTotalRoadTime(data)}
         </Title>
       </div>
     </>

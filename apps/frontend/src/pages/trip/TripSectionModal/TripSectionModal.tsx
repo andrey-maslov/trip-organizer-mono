@@ -14,7 +14,8 @@ import {
 import { Section, SectionType } from '../../../../../../libs/models/models';
 import { AiOutlineMinusCircle } from 'react-icons/ai';
 import { FORM_GUTTER } from '../../../constants/interface.constants';
-import * as dayjs from 'dayjs';
+import dayjs from 'dayjs';
+import type { Dayjs } from 'dayjs';
 import {
   currencyISONameList,
   DEFAULT_SECTION_STATUS,
@@ -24,6 +25,9 @@ import {
   statusTypesList,
   transportTypesList,
 } from '../../../constants/system.constants';
+import {getHumanizedTimeDuration} from "../../../../../../libs/helpers/helpers";
+
+import styles from './section-modal.module.scss'
 
 const { RangePicker } = DatePicker;
 const { Paragraph } = Typography;
@@ -65,6 +69,7 @@ export const TripSectionModal: React.FC<TripSectionModalProps> = ({
   onCancel,
 }) => {
   const [sectionType, setSectionType] = useState(initialData?.type || DEFAULT_SECTION_TYPE);
+  const [rangeTimeArr, setRangeTimeArr] = useState<Dayjs[]>([]);
 
   const [form] = Form.useForm();
 
@@ -141,13 +146,14 @@ export const TripSectionModal: React.FC<TripSectionModalProps> = ({
                   message: 'Please input the Section name!',
                 },
               ]}
+              style={{ marginBottom: "10px" }}
             >
               <Input />
             </Form.Item>
           </Col>
 
           <Col span={6}>
-            <Form.Item name="type" label="Section type" hasFeedback>
+            <Form.Item name="type" label="Section type" style={{ marginBottom: "10px" }} hasFeedback>
               <Select
                 placeholder="Please select section type"
                 onChange={onSectionTypeChange}
@@ -162,7 +168,7 @@ export const TripSectionModal: React.FC<TripSectionModalProps> = ({
           </Col>
 
           <Col span={6}>
-            <Form.Item name="status" label="Section status" hasFeedback>
+            <Form.Item name="status" label="Section status" hasFeedback style={{ marginBottom: "10px" }}>
               <Select placeholder="Please select section status">
                 {statusTypesList.map((status) => (
                   <Select.Option key={status} value={status}>
@@ -174,13 +180,25 @@ export const TripSectionModal: React.FC<TripSectionModalProps> = ({
           </Col>
         </Row>
 
-        <Form.Item
-          name="rangeTime"
-          label="Select dates and times"
-          {...rangeConfig}
-        >
-          <RangePicker showTime format="YYYY-MM-DD HH:mm" />
-        </Form.Item>
+        <Row>
+          <Form.Item
+            name="rangeTime"
+            label="Select dates and times"
+            {...rangeConfig}
+            style={{ marginBottom: "10px" }}
+          >
+            <RangePicker
+              showTime format="YYYY-MM-DD HH:mm"
+              // @ts-ignore
+              onOk={(list: Dayjs[]) => {
+                if (list?.length === 2) {
+                  setRangeTimeArr(list)
+                }
+              }}
+            />
+          </Form.Item>
+          <div className={styles.duration}>= {getHumanizedTimeDuration(rangeTimeArr[0], rangeTimeArr[1])}</div>
+        </Row>
 
         <Paragraph>Geo points</Paragraph>
         <Form.List name="points">
@@ -194,17 +212,17 @@ export const TripSectionModal: React.FC<TripSectionModalProps> = ({
                     align="baseline"
                   >
                     <span>Point&nbsp;{key + 1}</span>
-                    <Form.Item {...restField} name={[name, 'name']}>
+                    <Form.Item {...restField} name={[name, 'name']} style={{ marginBottom: "10px" }}>
                       <Input placeholder="Name" />
                     </Form.Item>
-                    <Form.Item {...restField} name={[name, 'country']}>
+                    <Form.Item {...restField} name={[name, 'country']} style={{ marginBottom: "10px" }}>
                       <Input placeholder="Country" />
                     </Form.Item>
                     <AiOutlineMinusCircle onClick={() => remove(name)} />
                   </Space>
                 );
               })}
-              <Form.Item>
+              <Form.Item style={{ marginBottom: "10px" }}>
                 <Button type="dashed" onClick={() => add()} block>
                   + Add geo point
                 </Button>
@@ -218,6 +236,7 @@ export const TripSectionModal: React.FC<TripSectionModalProps> = ({
             <Form.Item
               name={serviceProviderType[sectionType].fieldName}
               label={serviceProviderType[sectionType].label}
+              style={{ marginBottom: "10px" }}
               hasFeedback
             >
               <Select
@@ -236,6 +255,7 @@ export const TripSectionModal: React.FC<TripSectionModalProps> = ({
             <Form.Item
               name={['serviceProvider', 'name']}
               label="Service provider name"
+              style={{ marginBottom: "10px" }}
             >
               <Input />
             </Form.Item>
@@ -244,6 +264,7 @@ export const TripSectionModal: React.FC<TripSectionModalProps> = ({
             <Form.Item
               name={['serviceProvider', 'link']}
               label="Service provider link"
+              style={{ marginBottom: "10px" }}
             >
               <Input />
             </Form.Item>
@@ -262,16 +283,16 @@ export const TripSectionModal: React.FC<TripSectionModalProps> = ({
                     align="baseline"
                   >
                     <span>P&nbsp;{key + 1}</span>
-                    <Form.Item {...restField} name={[name, 'name']}>
+                    <Form.Item {...restField} name={[name, 'name']} style={{ marginBottom: "10px" }}>
                       <Input placeholder="Name" />
                     </Form.Item>
-                    <Form.Item {...restField} name={[name, 'link']}>
+                    <Form.Item {...restField} name={[name, 'link']} style={{ marginBottom: "10px" }}>
                       <Input placeholder="Link" />
                     </Form.Item>
-                    <Form.Item {...restField} name={[name, 'price', 'amount']}>
+                    <Form.Item {...restField} name={[name, 'price', 'amount']} style={{ marginBottom: "10px" }}>
                       <Input placeholder="Price" type="number" />
                     </Form.Item>
-                    <Form.Item name={[name, 'price', 'currency']} hasFeedback>
+                    <Form.Item name={[name, 'price', 'currency']} style={{ marginBottom: "10px" }} hasFeedback>
                       <Select placeholder="Currency">
                         {currencyISONameList.map((currency) => (
                           <Select.Option key={currency} value={currency}>
@@ -284,7 +305,7 @@ export const TripSectionModal: React.FC<TripSectionModalProps> = ({
                   </Space>
                 );
               })}
-              <Form.Item>
+              <Form.Item style={{ marginBottom: "10px" }}>
                 <Button type="dashed" onClick={() => add()} block>
                   + Add payment
                 </Button>
