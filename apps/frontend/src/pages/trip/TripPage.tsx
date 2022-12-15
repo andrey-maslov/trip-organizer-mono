@@ -1,23 +1,35 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { Divider, Typography } from 'antd';
+import { Button, Divider, Tooltip, Typography } from 'antd';
 import * as dayjs from 'dayjs';
 import { TripSections } from './TripSections/TripSections';
-import { useQuery } from 'react-query';
-import { fetchOneTrip } from '../../api/apiTrips';
-import { TripType } from '../../../../../libs/models/models';
+import { useMutation, useQuery, useQueryClient } from 'react-query';
+import { fetchOneTrip, updateTrip } from '../../api/apiTrips';
+import { Trip } from '../../../../../libs/models/models';
 import { getHumanizedTimeDuration } from '../../../../../libs/helpers/helpers';
+import { TripModal } from '../main/TripModal/TripModal';
+import styles from './trip-page.module.scss'
 
 const { Title, Paragraph } = Typography;
 
 export const TripPage: React.FC = (): JSX.Element => {
   const { id } = useParams();
+  const queryClient = useQueryClient();
+
+  const [openTripModal, setOpenTripModal] = useState(false);
 
   const {
     isLoading,
     error,
     data: trip,
-  } = useQuery<TripType, Error>(['trip', id], () => fetchOneTrip(id || ''));
+  } = useQuery<Trip, Error>(['trip', id], () => fetchOneTrip(id || ''));
+
+  const updateTripMutation = useMutation(updateTrip, {
+    onSuccess: () => {
+      setOpenTripModal(false);
+      void queryClient.invalidateQueries(['trip', id]);
+    },
+  });
 
   if (isLoading) {
     return <div>Loading...</div>;
@@ -37,19 +49,46 @@ export const TripPage: React.FC = (): JSX.Element => {
     <>
       <Title>{name}</Title>
       <Paragraph>{description}</Paragraph>
-      <Title level={5}>
-        {`From ${
-          dayjs(dateTimeStart).isValid()
+      <Paragraph className={styles.date}>
+        From{' '}
+        <strong>
+          {dayjs(dateTimeStart).isValid()
             ? dayjs(dateTimeStart).format('DD MMM YYYY')
-            : '...'
-        } to ${
-          dayjs(dateTimeEnd).isValid()
+            : '...'}
+        </strong>{' '}
+        to{' '}
+        <strong>
+          {dayjs(dateTimeEnd).isValid()
             ? dayjs(dateTimeEnd).format('DD MMM YYYY')
-            : '...'
-        } (${getHumanizedTimeDuration(dateTimeStart, dateTimeEnd)})`}
-      </Title>
+            : '...'}{' '}
+        </strong>
+        <span>({getHumanizedTimeDuration(dateTimeStart, dateTimeEnd)})</span>
+      </Paragraph>
+
+      <Tooltip title="Edit journey">
+        <Button
+          type="primary"
+          onClick={() => {
+            setOpenTripModal(true);
+          }}
+        >
+          Edit journey
+        </Button>
+      </Tooltip>
       <Divider />
       <TripSections trip={trip} />
+
+      {openTripModal ? (
+        <TripModal
+          open={openTripModal}
+          initialData={trip}
+          onCreate={() => null}
+          onUpdate={updateTripMutation.mutate}
+          onCancel={() => {
+            setOpenTripModal(false);
+          }}
+        />
+      ) : null}
     </>
   );
 };

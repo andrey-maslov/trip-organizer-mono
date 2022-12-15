@@ -15,7 +15,7 @@ import {
   TripSectionModal,
   TripSectionValues,
 } from '../TripSectionModal/TripSectionModal';
-import { Section, TripType } from '../../../../../../libs/models/models';
+import { Section, Trip } from '../../../../../../libs/models/models';
 import styles from './trip-sections.module.scss';
 import { useMutation, useQueryClient } from 'react-query';
 import { updateTrip } from '../../../api/apiTrips';
@@ -23,10 +23,7 @@ import {
   DEFAULT_CURRENCY,
   sectionTypesList,
 } from '../../../constants/system.constants';
-import {
-  getTotalRoadTime,
-  getTotalTicketsAmount,
-} from '../../../../../../libs/services/TotalValues.service';
+import { getTotalValues } from '../../../../../../libs/services/TotalValues.service';
 
 const { Title } = Typography;
 const CheckboxGroup = Checkbox.Group;
@@ -39,7 +36,7 @@ const sectionTypeOptions = sectionTypesList as unknown as (
 const defaultCheckedList = sectionTypeOptions as unknown as CheckboxValueType[];
 
 export type TripSectionsProps = {
-  trip: TripType;
+  trip: Trip;
 };
 
 export const TripSections: FC<TripSectionsProps> = ({ trip }) => {
@@ -50,6 +47,8 @@ export const TripSections: FC<TripSectionsProps> = ({ trip }) => {
     useState<CheckboxValueType[]>(defaultCheckedList);
 
   const [currentSectionId, setCurrentSectionId] = useState('');
+
+  const totalValues = getTotalValues(trip);
 
   const onSectionTypeChange = (list: CheckboxValueType[]) => {
     if (list.length === 0) {
@@ -160,13 +159,38 @@ export const TripSections: FC<TripSectionsProps> = ({ trip }) => {
       <Divider />
       <div>
         <Title level={4}>Summary</Title>
-        <Title level={5}>
-          Total price {`(${checkedList.join(', ')})`} :{' '}
-          {getTotalTicketsAmount(data)} {DEFAULT_CURRENCY}
-        </Title>
-        <Title level={5}>
-          Total time {`(${checkedList.join(', ')})`} : {getTotalRoadTime(data)}
-        </Title>
+        <ul className={styles.totalValues}>
+          <li className={styles.totalValuesItem}>
+            <span>Total price: </span>
+            <span>
+              {totalValues.totalCost} {DEFAULT_CURRENCY}
+            </span>
+          </li>
+          <li className={styles.totalValuesItem}>
+            <span>Road price: </span>
+            <span>
+              {totalValues.roadCost} {DEFAULT_CURRENCY}
+            </span>
+          </li>
+          <li className={styles.totalValuesItem}>
+            <span>Stay price: </span>
+            <span>
+              {totalValues.stayCost} {DEFAULT_CURRENCY}
+            </span>
+          </li>
+          <li className={styles.totalValuesItem}>
+            <span>Road time: </span>
+            <span>{totalValues.roadTimeStr}</span>
+          </li>
+          <li className={styles.totalValuesItem}>
+            <span>Stay time: </span>
+            <span>{totalValues.stayTimeStr}</span>
+          </li>
+          <li className={styles.totalValuesItem}>
+            <span>Waiting time: </span>
+            <span>{totalValues.waitingTimeStr}</span>
+          </li>
+        </ul>
       </div>
     </>
   );

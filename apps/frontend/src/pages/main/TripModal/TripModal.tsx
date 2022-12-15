@@ -1,12 +1,12 @@
 import React from 'react';
 import * as dayjs from 'dayjs';
 import { Form, Input, Modal, DatePicker, Row, Col } from 'antd';
-import { TripType } from '../../../../../../libs/models/models';
+import { Trip } from '../../../../../../libs/models/models';
 import { FORM_GUTTER } from '../../../constants/interface.constants';
 
 const { TextArea } = Input;
 
-export type TripValues = TripType;
+export type TripValues = Trip;
 
 export type TripModalProps = {
   open: boolean;
@@ -47,7 +47,7 @@ export const TripModal: React.FC<TripModalProps> = ({
         console.log('Validate Failed:', info);
       });
   };
-  
+
   const defaultData = {
     ...initialData,
     dateTimeStart: dayjs(initialData?.dateTimeStart),

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Button, Col, Popconfirm, Row, Tooltip, Typography } from 'antd';
 import { NavLink } from 'react-router-dom';
-import { TripType } from '../../../../../libs/models/models';
+import { Trip } from '../../../../../libs/models/models';
 import { useQuery, useMutation, useQueryClient } from 'react-query';
 import {
   createTrip,
@@ -26,25 +26,25 @@ export const MainPage: React.FC = (): JSX.Element => {
     isError,
     data: trips,
     error,
-  } = useQuery<TripType[], Error>(['trips', {}], () => fetchTrips({}));
+  } = useQuery<Trip[], Error>(['trips', {}], () => fetchTrips({}));
 
   const createTripMutation = useMutation(createTrip, {
     onSuccess: () => {
       setOpen(false);
-      void queryClient.invalidateQueries('trips');
+      void queryClient.invalidateQueries(['trips', {}]);
     },
   });
 
   const updateTripMutation = useMutation(updateTrip, {
     onSuccess: () => {
       setOpen(false);
-      void queryClient.invalidateQueries('trips');
+      void queryClient.invalidateQueries(['trips', {}]);
     },
   });
 
   const removeTripMutation = useMutation(removeTrip, {
     onSuccess: () => {
-      void queryClient.invalidateQueries('trips');
+      void queryClient.invalidateQueries(['trips', {}]);
     },
   });
 

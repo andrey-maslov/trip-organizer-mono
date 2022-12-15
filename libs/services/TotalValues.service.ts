@@ -1,52 +1,96 @@
-import { Section } from '../models/models';
+import { Section, Trip } from '../models/models';
 import * as dayjs from 'dayjs';
 import * as duration from 'dayjs/plugin/duration';
+import { getHumanizedTimeDuration } from '../helpers/helpers';
 
 dayjs.extend(duration);
 
-export const getTotalRoadTime = (sections: Section[]): string => {
-  if (!Array.isArray(sections) || sections.length === 0) {
-    return '';
-  }
+export const getTotalValues = (trip: Trip) => {
+  const { sections, dateTimeStart, dateTimeEnd } = trip;
 
-  const durationsList = sections.map(({ dateTimeStart, dateTimeEnd }) => {
-    if (dateTimeStart && dateTimeEnd) {
-      const [time1, time2] = [dayjs(dateTimeStart), dayjs(dateTimeEnd)];
-      return time2.diff(time1);
-    } else {
-      return 0;
-    }
-  });
+  let roadCost = 0;
+  let stayCost = 0;
+  let totalTimeMs = 0;
+  let totalTimeStr = '';
+  let roadTimeMs = 0;
+  let roadTimeStr = '';
+  let stayTimeMs = 0;
+  let stayTimeStr = '';
+  let waitingTimeMs = 0;
 
-  const totalDuration =
-    durationsList.length > 0 ? durationsList.reduce((a, b) => a + b) : 0;
+  // Duration between start trip date and end trip date
+  const totalTripTime = dayjs(dateTimeEnd).diff(dayjs(dateTimeStart));
 
-  if (typeof totalDuration === 'number') {
-    return dayjs.duration(totalDuration).format('D[d] H[h] m[m]');
-  } else {
-    return '---';
-  }
-};
+  if (Array.isArray(sections) && sections.length > 0) {
+    const roadCostsList: number[] = [];
+    const stayCostsList: number[] = [];
+    const roadDurationsList: number[] = [];
+    const stayDurationsList: number[] = [];
 
-// TODO add currency conversion support here
-/**
- * Gets total sum of all tickets from all sections from one trip
- * @param sections - list of the trip sections
- */
-export const getTotalTicketsAmount = (sections: Section[]): number => {
-  if (!Array.isArray(sections) || sections.length === 0) {
-    return 0;
-  }
-
-  const ticketAmounts: number[] = [];
-  sections.forEach((section) => {
-    if (section?.payments) {
-      section.payments.forEach((payment) => {
-        if (typeof payment.price?.amount === 'number') {
-          ticketAmounts.push(payment.price.amount);
+    sections.forEach(({ payments, type, dateTimeStart, dateTimeEnd }) => {
+      // Road
+      if (type === 'road') {
+        // Payments
+        if (payments) {
+          payments.forEach(({ price }) => {
+            roadCostsList.push(
+              typeof price?.amount === 'number' ? price.amount : 0
+            );
+          });
         }
-      });
-    }
-  });
-  return ticketAmounts.length > 0 ? ticketAmounts.reduce((a, b) => a + b) : 0;
+
+        // Duration
+        if (dateTimeStart && dateTimeEnd) {
+          const [time1, time2] = [dayjs(dateTimeStart), dayjs(dateTimeEnd)];
+          roadDurationsList.push(time2.diff(time1));
+        }
+      }
+
+      // Stay
+      if (type === 'stay') {
+        // Payments
+        if (payments) {
+          payments.forEach(({ price }) => {
+            stayCostsList.push(
+              typeof price?.amount === 'number' ? price.amount : 0
+            );
+          });
+        }
+
+        // Duration
+        if (dateTimeStart && dateTimeEnd) {
+          const [time1, time2] = [dayjs(dateTimeStart), dayjs(dateTimeEnd)];
+          stayDurationsList.push(time2.diff(time1));
+        }
+      }
+    });
+
+    roadCost = getReducedSum(roadCostsList);
+    stayCost = getReducedSum(stayCostsList);
+
+    roadTimeMs = getReducedSum(roadDurationsList) || 0;
+    roadTimeStr = getHumanizedTimeDuration(roadTimeMs);
+    stayTimeMs = getReducedSum(stayDurationsList) || 0;
+    stayTimeStr = getHumanizedTimeDuration(stayTimeMs);
+  }
+
+  return {
+    totalTimeMs,
+    totalTimeStr,
+    roadTimeMs,
+    roadTimeStr,
+    stayTimeMs,
+    stayTimeStr,
+    waitingTimeMs,
+    waitingTimeStr: getHumanizedTimeDuration(
+      totalTripTime - roadTimeMs - stayTimeMs
+    ),
+    totalCost: roadCost + stayCost,
+    roadCost,
+    stayCost,
+  };
 };
+
+function getReducedSum(list: number[]): number {
+  return list.length > 0 ? list.reduce((a, b) => a + b) : 0;
+}

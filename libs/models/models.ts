@@ -6,7 +6,7 @@ import {
   transportTypesList,
 } from '../../apps/frontend/src/constants/system.constants';
 
-export type TripType = {
+export type Trip = {
   name: string;
   dateTimeStart: string | null;
   dateTimeEnd: string | null;

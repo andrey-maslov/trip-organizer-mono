@@ -1,10 +1,10 @@
-import type { TripType } from '../../../../libs/models/models';
+import type { Trip } from '../../../../libs/models/models';
 // import { CurrencyISOName } from '../models/models';
 
 const fakeDate = '2022-11-29T16:32:33.043Z';
 const fakeDateEnd = '2022-11-29T21:32:33.043Z';
 
-export const fakeTrip: TripType | any = {
+export const fakeTrip: Trip | any = {
   name: 'Budapest 22-23',
   dateStart: fakeDate,
   dateEnd: fakeDateEnd,
@@ -114,4 +114,4 @@ export const fakeTrip: TripType | any = {
   _id: '13245j53kjbk3',
 };
 
-export const fakeTripsList: TripType[] = [fakeTrip];
+export const fakeTripsList: Trip[] = [fakeTrip];
