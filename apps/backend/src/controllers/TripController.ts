@@ -6,7 +6,6 @@ class TripController {
       const trip = await tripService.create(req.body);
       res.status(201).json(trip);
     } catch (e) {
-      console.log(e)
       res.status(500).json(e);
     }
   }

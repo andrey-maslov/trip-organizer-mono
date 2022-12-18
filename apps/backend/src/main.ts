@@ -1,7 +1,7 @@
 import * as express from 'express';
 import mongoose from 'mongoose';
 import tripRouter from './routers/tripRouter';
-import { DB_URL_LOCAL } from './db/db.constants';
+import { DB_URL } from './db/db.constants';
 import { mongooseConnectOptions } from './db/db-connect.config';
 
 const PORT = process.env.port || 3333;
@@ -14,7 +14,7 @@ app.use('/api', tripRouter);
 
 async function startApp() {
   try {
-    await mongoose.connect(DB_URL_LOCAL, mongooseConnectOptions, () => {
+    await mongoose.connect(DB_URL, mongooseConnectOptions, () => {
       console.log('connected');
     });
     app.listen(PORT, () => console.log(`Started at port ${PORT}`));

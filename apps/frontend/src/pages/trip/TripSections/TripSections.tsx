@@ -24,6 +24,7 @@ import {
   sectionTypesList,
 } from '../../../constants/system.constants';
 import { getTotalValues } from '../../../../../../libs/services/TotalValues.service';
+import { TripSummary } from '../TripSummary';
 
 const { Title } = Typography;
 const CheckboxGroup = Checkbox.Group;
@@ -104,14 +105,17 @@ export const TripSections: FC<TripSectionsProps> = ({ trip }) => {
   return (
     <>
       <div className={styles.tableWrapper}>
-        <p>Show types only: </p>
-        <CheckboxGroup
-          options={sectionTypeOptions}
-          value={checkedList}
-          onChange={onSectionTypeChange}
-          className={styles.filter}
-        />
-
+        {trip.sections.length > 0 && (
+          <>
+            <p>Show types only: </p>
+            <CheckboxGroup
+              options={sectionTypeOptions}
+              value={checkedList}
+              onChange={onSectionTypeChange}
+              className={styles.filter}
+            />
+          </>
+        )}
         {Array.isArray(trip.sections) && trip.sections.length > 0 ? (
           <Table
             columns={columns}
@@ -156,42 +160,16 @@ export const TripSections: FC<TripSectionsProps> = ({ trip }) => {
           />
         )}
       </div>
-      <Divider />
-      <div>
-        <Title level={4}>Summary</Title>
-        <ul className={styles.totalValues}>
-          <li className={styles.totalValuesItem}>
-            <span>Total price: </span>
-            <span>
-              {totalValues.totalCost} {DEFAULT_CURRENCY}
-            </span>
-          </li>
-          <li className={styles.totalValuesItem}>
-            <span>Road price: </span>
-            <span>
-              {totalValues.roadCost} {DEFAULT_CURRENCY}
-            </span>
-          </li>
-          <li className={styles.totalValuesItem}>
-            <span>Stay price: </span>
-            <span>
-              {totalValues.stayCost} {DEFAULT_CURRENCY}
-            </span>
-          </li>
-          <li className={styles.totalValuesItem}>
-            <span>Road time: </span>
-            <span>{totalValues.roadTimeStr}</span>
-          </li>
-          <li className={styles.totalValuesItem}>
-            <span>Stay time: </span>
-            <span>{totalValues.stayTimeStr}</span>
-          </li>
-          <li className={styles.totalValuesItem}>
-            <span>Waiting time: </span>
-            <span>{totalValues.waitingTimeStr}</span>
-          </li>
-        </ul>
-      </div>
+
+      {trip.sections.length > 0 && (
+        <>
+          <Divider />
+          <div>
+            <Title level={4}>Summary</Title>
+            <TripSummary totalValues={totalValues} />
+          </div>
+        </>
+      )}
     </>
   );
 };

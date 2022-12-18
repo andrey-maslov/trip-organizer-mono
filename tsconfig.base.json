@@ -12,7 +12,9 @@
     "module": "esnext",
     "lib": ["es2017", "dom"],
     "skipLibCheck": true,
-    "skipDefaultLibCheck": true
+    "skipDefaultLibCheck": true,
+    "baseUrl": ".",
+    "paths": {}
   },
   "exclude": ["node_modules", "tmp"]
 }
