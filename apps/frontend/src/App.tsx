@@ -12,11 +12,12 @@ export function App(): JSX.Element {
   return (
     <QueryClientProvider client={queryClient}>
       <PageLayout>
-        <Routes>
-          <Route path="/" element={<MainPage />} />
-          <Route path="trip/:id" element={<TripPage />} />
-          <Route path="*" element={<p>There&apos;s nothing here: 404!</p>} />
-        </Routes>
+        {/*<Routes>*/}
+          <div>APP simple</div>
+          {/*<Route path="/" element={<MainPage />} />*/}
+          {/*<Route path="trip/:id" element={<TripPage />} />*/}
+          {/*<Route path="*" element={<p>There&apos;s nothing here: 404!</p>} />*/}
+        {/*</Routes>*/}
       </PageLayout>
       <ReactQueryDevtools initialIsOpen={false} />
     </QueryClientProvider>
