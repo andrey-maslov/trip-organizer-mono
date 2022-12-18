@@ -1,0 +1,26 @@
+.transport {
+  display: flex;
+  align-items: center;
+}
+
+.icon {
+  margin-right: 10px;
+
+  svg {
+    font-size: 30px;
+    color: rgba(0,0,0,.4)
+  }
+}
+
+
+.buttons {
+  button {
+    &:first-of-type {
+      margin-right: 10px;
+    }
+  }
+}
+
+.date {
+  font-size: 20px;
+}

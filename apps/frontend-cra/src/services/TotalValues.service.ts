@@ -10,13 +10,13 @@ export const getTotalValues = (trip: Trip) => {
 
   let roadCost = 0;
   let stayCost = 0;
-  let totalTimeMs = 0;
-  let totalTimeStr = '';
+  const totalTimeMs = 0;
+  const totalTimeStr = '';
   let roadTimeMs = 0;
   let roadTimeStr = '';
   let stayTimeMs = 0;
   let stayTimeStr = '';
-  let waitingTimeMs = 0;
+  const waitingTimeMs = 0;
 
   // Duration between start trip date and end trip date
   const totalTripTime = dayjs(dateTimeEnd).diff(dayjs(dateTimeStart));

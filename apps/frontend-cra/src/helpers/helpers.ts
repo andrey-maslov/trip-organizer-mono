@@ -11,8 +11,8 @@ type Time = number | string | undefined | null | dayjs.Dayjs;
  * @param time2 - dayjs object or time in ms
  */
 export const getHumanizedTimeDuration = (time1: Time, time2?: Time | undefined): string => {
-  let _time1 = dayjs(time1);
-  let _time2 = time2 ? dayjs(time2) : null;
+  const _time1 = dayjs(time1);
+  const _time2 = time2 ? dayjs(time2) : null;
 
   if (!_time1.isValid()) {
     return '';
