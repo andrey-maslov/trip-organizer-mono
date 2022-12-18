@@ -7,6 +7,7 @@ import { Route, Routes, Link } from 'react-router-dom';
 export function App() {
   return (
     <>
+      <h1>CRA!!!</h1>
       <NxWelcome title="frontend-cra" />
       <div />
 
