@@ -7,7 +7,7 @@
     "build": "nx build",
     "test": "nx test",
     "lint": "nx lint",
-    "start:all": "nx run-many --parallel --target=serve --projects=backend,frontend"
+    "start:all": "nx run-many --parallel --target=serve --projects=backend,frontend-cra"
   },
   "private": true,
   "devDependencies": {
@@ -30,9 +30,10 @@
     "@types/express": "4.17.13",
     "@types/jest": "28.1.1",
     "@types/mongoose": "^5.11.97",
-    "@types/node": "18.7.1",
+    "@types/node": "18.11.9",
     "@types/react": "18.0.25",
     "@types/react-dom": "18.0.9",
+    "@types/react-router-dom": "5.3.3",
     "@types/uuid": "^9.0.0",
     "@typescript-eslint/eslint-plugin": "^5.36.1",
     "@typescript-eslint/parser": "^5.36.1",
@@ -79,7 +80,7 @@
     "react-dom": "18.2.0",
     "react-icons": "^4.7.1",
     "react-query": "^3.39.2",
-    "react-router-dom": "^6.4.4",
+    "react-router-dom": "6.4.3",
     "regenerator-runtime": "0.13.7",
     "tslib": "^2.3.0",
     "uuid": "^9.0.0"
