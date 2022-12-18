@@ -33,6 +33,8 @@ To connect and Use MongoDB open new terminal and run ```mongosh```. Then you can
 [Documentation (MacOS)](https://www.mongodb.com/docs/manual/tutorial/install-mongodb-on-os-x/)
 
 ## Useful links
+[React + NX](https://blog.nrwl.io/powering-up-react-development-with-nx-cf0a9385dbec)
+
 [Video about NX.js](https://www.youtube.com/watch?v=VUyBY72mwrQ)
 [Video about NX.js 2](https://www.youtube.com/watch?v=1eHlaVoeDfU)
 
