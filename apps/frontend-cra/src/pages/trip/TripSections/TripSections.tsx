@@ -93,13 +93,16 @@ export const TripSections: FC<TripSectionsProps> = ({ trip }) => {
   // Get cells structure and render rules with passing 2 callbacks there as buttons click handlers
   const columns = getColumns(onSectionRemove, onUpdateButtonClick);
 
-  const data: Section[] = trip.sections
-    .filter((section) => checkedList.includes(section.type))
-    .map((section, index) => ({
-      ...section,
-      index: ++index,
-      key: section.name,
-    }));
+  const data: Section[] =
+    trip.sections && trip.sections.length > 0
+      ? trip.sections
+          .filter((section) => checkedList.includes(section.type))
+          .map((section, index) => ({
+            ...section,
+            index: ++index,
+            key: section.name,
+          }))
+      : [];
 
   return (
     <>
