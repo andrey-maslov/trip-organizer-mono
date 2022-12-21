@@ -78,5 +78,5 @@
       }
     }
   },
-  "defaultProject": "backend"
+  "defaultProject": "frontend-cra"
 }
