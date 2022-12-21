@@ -1,6 +1,6 @@
 {
   "name": "trip-organizer-mono",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "license": "MIT",
   "scripts": {
     "start": "nx serve",
@@ -8,6 +8,9 @@
     "test": "nx test",
     "lint": "nx lint",
     "start:all": "nx run-many --parallel --target=serve --projects=backend,frontend-cra"
+  },
+  "engines": {
+    "node": "16.17.1"
   },
   "private": true,
   "devDependencies": {
