@@ -4,7 +4,7 @@ import tripRouter from './routers/tripRouter';
 import { DB_URL } from './db/db.constants';
 import { mongooseConnectOptions } from './db/db-connect.config';
 
-const PORT = process.env.port || 3333;
+const PORT = process.env.PORT || 3333;
 
 const app = express();
 
