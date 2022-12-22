@@ -59,7 +59,7 @@ export const MainPage: React.FC = (): JSX.Element => {
   return (
     <>
       <Row justify="center">
-        <Col span={12}>
+        <Col xl={10} md={16} xs={22}>
           <Title level={2}>Here you can see all your planned trips</Title>
           <ul className={styles.list}>
             {trips.length > 0 ? (
@@ -70,7 +70,6 @@ export const MainPage: React.FC = (): JSX.Element => {
                     <div className={styles.itemButtons}>
                       <Button
                         danger
-                        style={{ padding: '4px 8px' }}
                         onClick={() => {
                           setCurrentTripId(_id);
                           setOpen(true);
@@ -82,7 +81,7 @@ export const MainPage: React.FC = (): JSX.Element => {
                         title="Sure to delete?"
                         onConfirm={() => removeTripMutation.mutate(_id)}
                       >
-                        <Button danger style={{ padding: '4px 8px' }}>
+                        <Button danger>
                           <FaTrashAlt />
                         </Button>
                       </Popconfirm>

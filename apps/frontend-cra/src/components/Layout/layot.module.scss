@@ -1,16 +1,14 @@
-.wrapper {
-  padding-top: 40px;
-  padding-bottom: 40px;
+.layout {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
 }
 
-.navList {
-  display: flex;
-  margin: 0;
-  padding: 0;
-
-  li {
-    padding: 10px;
-  }
+.content {
+  padding-top: 40px;
+  padding-bottom: 40px;
+  flex-grow: 1;
+  flex-shrink: 0;
 }
 
 a.logo {
@@ -21,4 +19,8 @@ a.logo {
   sub {
     font-weight: normal;
   }
+}
+
+.footer {
+  background: rgba(#001529, .5) !important;
 }

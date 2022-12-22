@@ -9,26 +9,14 @@ export const PageLayout: React.FC<{ children: React.ReactNode }> = ({
   children,
 }): JSX.Element => {
   return (
-    <Layout>
+    <Layout className={styles.layout}>
       <Header>
-        <div>
-          <Link href={'/'} className={styles.logo}>
-            T<sub>rip</sub>O<sub>org</sub>
-          </Link>
-        </div>
+        <Link href={'/'} className={styles.logo}>
+          T<sub>rip</sub>O<sub>org</sub>
+        </Link>
       </Header>
-      <Content
-        className="site-layout"
-        style={{ padding: '0 50px', marginTop: 64 }}
-      >
-        <div
-          className="site-layout-background"
-          style={{ padding: 24, minHeight: 680 }}
-        >
-          {children}
-        </div>
-      </Content>
-      <Footer style={{ textAlign: 'center' }}>Footer</Footer>
+      <Content className={styles.content}>{children}</Content>
+      <Footer className={styles.footer}>Footer</Footer>
     </Layout>
   );
 };

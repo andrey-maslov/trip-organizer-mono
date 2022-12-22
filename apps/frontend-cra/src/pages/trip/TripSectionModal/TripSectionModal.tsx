@@ -33,6 +33,8 @@ const { RangePicker } = DatePicker;
 const { Paragraph } = Typography;
 const { TextArea } = Input;
 
+export type DateRangeType = null | (Dayjs | null)[]
+
 const serviceProviderType: Record<SectionType, Record<string, any>> = {
   road: {
     data: transportTypesList,
@@ -71,7 +73,7 @@ export const TripSectionModal: React.FC<TripSectionModalProps> = ({
   const [sectionType, setSectionType] = useState(
     initialData?.type || DEFAULT_SECTION_TYPE
   );
-  const [rangeTimeArr, setRangeTimeArr] = useState<Dayjs[]>([]);
+  const [rangeTimeArr, setRangeTimeArr] = useState<DateRangeType>([]);
 
   const [form] = Form.useForm();
 
@@ -137,8 +139,9 @@ export const TripSectionModal: React.FC<TripSectionModalProps> = ({
         name="form_in_modal"
         initialValues={defaultData}
       >
+        {/* Name, Type, Status */}
         <Row gutter={FORM_GUTTER}>
-          <Col span={12}>
+          <Col md={12} xs={24}>
             <Form.Item
               name="name"
               label="Section name"
@@ -154,7 +157,7 @@ export const TripSectionModal: React.FC<TripSectionModalProps> = ({
             </Form.Item>
           </Col>
 
-          <Col span={6}>
+          <Col md={6} xs={12}>
             <Form.Item
               name="type"
               label="Section type"
@@ -174,7 +177,7 @@ export const TripSectionModal: React.FC<TripSectionModalProps> = ({
             </Form.Item>
           </Col>
 
-          <Col span={6}>
+          <Col md={6} xs={12}>
             <Form.Item
               name="status"
               label="Section status"
@@ -192,6 +195,7 @@ export const TripSectionModal: React.FC<TripSectionModalProps> = ({
           </Col>
         </Row>
 
+        {/* Range time */}
         <Row>
           <Form.Item
             name="rangeTime"
@@ -202,20 +206,21 @@ export const TripSectionModal: React.FC<TripSectionModalProps> = ({
             <RangePicker
               showTime
               format="YYYY-MM-DD HH:mm"
-              // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-              // @ts-ignore
-              onOk={(list: Dayjs[]) => {
-                if (list?.length === 2) {
-                  setRangeTimeArr(list);
+              onOk={(dates: DateRangeType) => {
+                if (dates?.length === 2) {
+                  setRangeTimeArr(dates);
                 }
               }}
             />
           </Form.Item>
-          <div className={styles.duration}>
-            = {getHumanizedTimeDuration(rangeTimeArr[0], rangeTimeArr[1])}
-          </div>
+          {rangeTimeArr && rangeTimeArr.length === 2 && (
+            <div className={styles.duration}>
+              = {getHumanizedTimeDuration(rangeTimeArr[0], rangeTimeArr[1])}
+            </div>
+          )}
         </Row>
 
+        {/* GEO Points */}
         <Paragraph>Geo points</Paragraph>
         <Form.List name="points">
           {(fields, { add, remove }) => (
@@ -255,8 +260,9 @@ export const TripSectionModal: React.FC<TripSectionModalProps> = ({
           )}
         </Form.List>
 
+        {/* Transport */}
         <Row gutter={FORM_GUTTER}>
-          <Col span={6}>
+          <Col md={6} xs={24}>
             <Form.Item
               name={serviceProviderType[sectionType].fieldName}
               label={serviceProviderType[sectionType].label}
@@ -275,7 +281,7 @@ export const TripSectionModal: React.FC<TripSectionModalProps> = ({
             </Form.Item>
           </Col>
 
-          <Col span={9}>
+          <Col md={9} xs={24}>
             <Form.Item
               name={['serviceProvider', 'name']}
               label="Service provider name"
@@ -284,7 +290,7 @@ export const TripSectionModal: React.FC<TripSectionModalProps> = ({
               <Input />
             </Form.Item>
           </Col>
-          <Col span={9}>
+          <Col md={9} xs={24}>
             <Form.Item
               name={['serviceProvider', 'link']}
               label="Service provider link"
