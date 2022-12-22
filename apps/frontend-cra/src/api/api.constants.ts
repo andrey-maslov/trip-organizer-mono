@@ -1,4 +1,4 @@
-const API_BASE_PATH = `/api`;
+const API_BASE_PATH = `https://trip-organizer-api.up.railway.app/api`;
 const API_TRIPS_BASE = `${API_BASE_PATH}/trips`;
 
 export const API = {
