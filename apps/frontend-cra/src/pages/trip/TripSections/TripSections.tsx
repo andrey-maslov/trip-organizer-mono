@@ -86,7 +86,6 @@ export const TripSections: FC<TripSectionsProps> = ({ trip }) => {
       // create section case
       newSections = [...trip.sections, values];
     }
-
     addSectionMutation.mutate({ ...trip, sections: newSections });
   };
 
