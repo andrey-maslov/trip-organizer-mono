@@ -5,6 +5,7 @@ import { TripPage } from './pages/trip/TripPage';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { ReactQueryDevtools } from 'react-query/devtools';
 import { PageLayout } from './components/Layout/PageLayout';
+import 'antd/dist/reset.css';
 
 const queryClient = new QueryClient();
 

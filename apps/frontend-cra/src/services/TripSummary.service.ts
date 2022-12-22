@@ -5,7 +5,21 @@ import { getHumanizedTimeDuration } from '../helpers/helpers';
 
 dayjs.extend(duration);
 
-export const getTotalValues = (trip: Trip) => {
+export type TripSummaryValues = {
+  totalTimeMs: number;
+  totalTimeStr: string;
+  roadTimeMs: number;
+  roadTimeStr: string;
+  stayTimeMs: number;
+  stayTimeStr: string;
+  waitingTimeMs: number;
+  waitingTimeStr: string;
+  totalCost: number;
+  roadCost: number;
+  stayCost: number;
+}
+
+export const getTripSummaryValues = (trip: Trip): TripSummaryValues => {
   const { sections, dateTimeStart, dateTimeEnd } = trip;
 
   let roadCost = 0;

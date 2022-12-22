@@ -19,11 +19,9 @@ import { Section, Trip } from '../../../models/models';
 import styles from './trip-sections.module.scss';
 import { useMutation, useQueryClient } from 'react-query';
 import { updateTrip } from '../../../api/apiTrips';
-import {
-  DEFAULT_CURRENCY,
-  sectionTypesList,
-} from '../../../constants/system.constants';
-import { getTotalValues } from '../../../services/TotalValues.service';
+import { sectionTypesList } from '../../../constants/system.constants';
+import { getTripSummaryValues } from '../../../services/TripSummary.service';
+import { TripSummary } from '../TripSummary/TripSummary';
 
 const { Title } = Typography;
 const CheckboxGroup = Checkbox.Group;
@@ -43,12 +41,21 @@ export const TripSections: FC<TripSectionsProps> = ({ trip }) => {
   const queryClient = useQueryClient();
 
   const [open, setOpen] = useState(false);
+  const [currentSectionId, setCurrentSectionId] = useState('');
   const [checkedList, setCheckedList] =
     useState<CheckboxValueType[]>(defaultCheckedList);
 
-  const [currentSectionId, setCurrentSectionId] = useState('');
-
-  const totalValues = getTotalValues(trip);
+  // Prepare section to render: add index, filter, etc
+  const data: Section[] =
+    trip.sections && trip.sections.length > 0
+      ? trip.sections
+          .filter((section) => checkedList.includes(section.type))
+          .map((section, index) => ({
+            ...section,
+            index: ++index,
+            key: section._id,
+          }))
+      : [];
 
   const onSectionTypeChange = (list: CheckboxValueType[]) => {
     if (list.length === 0) {
@@ -92,27 +99,20 @@ export const TripSections: FC<TripSectionsProps> = ({ trip }) => {
   // Get cells structure and render rules with passing 2 callbacks there as buttons click handlers
   const columns = getColumns(onSectionRemove, onUpdateButtonClick);
 
-  const data: Section[] =
-    trip.sections && trip.sections.length > 0
-      ? trip.sections
-          .filter((section) => checkedList.includes(section.type))
-          .map((section, index) => ({
-            ...section,
-            index: ++index,
-            key: section.name,
-          }))
-      : [];
-
   return (
     <>
       <div className={styles.tableWrapper}>
-        <p>Show types only: </p>
-        <CheckboxGroup
-          options={sectionTypeOptions}
-          value={checkedList}
-          onChange={onSectionTypeChange}
-          className={styles.filter}
-        />
+        {trip.sections?.length > 0 && (
+          <>
+            <p>Show types only: </p>
+            <CheckboxGroup
+              options={sectionTypeOptions}
+              value={checkedList}
+              onChange={onSectionTypeChange}
+              className={styles.filter}
+            />
+          </>
+        )}
 
         {Array.isArray(trip.sections) && trip.sections.length > 0 ? (
           <Table
@@ -159,41 +159,12 @@ export const TripSections: FC<TripSectionsProps> = ({ trip }) => {
         )}
       </div>
       <Divider />
-      <div>
-        <Title level={4}>Summary</Title>
-        <ul className={styles.totalValues}>
-          <li className={styles.totalValuesItem}>
-            <span>Total price: </span>
-            <span>
-              {totalValues.totalCost} {DEFAULT_CURRENCY}
-            </span>
-          </li>
-          <li className={styles.totalValuesItem}>
-            <span>Road price: </span>
-            <span>
-              {totalValues.roadCost} {DEFAULT_CURRENCY}
-            </span>
-          </li>
-          <li className={styles.totalValuesItem}>
-            <span>Stay price: </span>
-            <span>
-              {totalValues.stayCost} {DEFAULT_CURRENCY}
-            </span>
-          </li>
-          <li className={styles.totalValuesItem}>
-            <span>Road time: </span>
-            <span>{totalValues.roadTimeStr}</span>
-          </li>
-          <li className={styles.totalValuesItem}>
-            <span>Stay time: </span>
-            <span>{totalValues.stayTimeStr}</span>
-          </li>
-          <li className={styles.totalValuesItem}>
-            <span>Waiting time: </span>
-            <span>{totalValues.waitingTimeStr}</span>
-          </li>
-        </ul>
-      </div>
+      {trip.sections?.length > 0 && (
+        <div>
+          <Title level={4}>Summary</Title>
+          <TripSummary values={getTripSummaryValues(trip)} />
+        </div>
+      )}
     </>
   );
 };

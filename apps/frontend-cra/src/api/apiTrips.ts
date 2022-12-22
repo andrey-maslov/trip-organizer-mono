@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { API } from './api.constants';
-import {Section, Trip} from '../models/models';
+import { Section, Trip } from '../models/models';
 
 export type Params = {
   name?: number;
@@ -18,16 +18,21 @@ export const fetchOneTrip = async (id: string): Promise<Trip> => {
 
 export const createTrip = async (newTrip: Trip): Promise<Trip> => {
   return axios.post(API.TRIPS, newTrip).then((res) => res.data);
-}
+};
 
 export const updateTrip = async (newTrip: Trip): Promise<Trip> => {
   return axios.put(API.TRIPS, newTrip).then((res) => res.data);
-}
+};
 
 export const removeTrip = async (id: string): Promise<Trip> => {
   return axios.delete(`${API.TRIPS}/${id}`).then((res) => res.data);
-}
+};
 
-export const addTripSection = async (tripId: string, sectionData: Section): Promise<Trip> => {
-  return axios.put(`${API.TRIPS}/${tripId}`, sectionData).then((res) => res.data);
-}
+export const addTripSection = async (
+  tripId: string,
+  sectionData: Section
+): Promise<Trip> => {
+  return axios
+    .put(`${API.TRIPS}/${tripId}`, sectionData)
+    .then((res) => res.data);
+};
