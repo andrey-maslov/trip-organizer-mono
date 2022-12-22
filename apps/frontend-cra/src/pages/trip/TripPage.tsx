@@ -6,7 +6,7 @@ import { TripSections } from './TripSections/TripSections';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
 import { fetchOneTrip, updateTrip } from '../../api/apiTrips';
 import { Trip } from '../../models/models';
-import { getHumanizedTimeDuration } from '../../helpers/helpers';
+import { getHumanizedTimeDuration } from '../../helpers/time';
 import { TripModal } from '../main/TripModal/TripModal';
 import styles from './trip-page.module.scss';
 

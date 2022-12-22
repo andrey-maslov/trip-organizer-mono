@@ -9,7 +9,6 @@ import {
   CheckboxOptionType,
 } from 'antd';
 import type { CheckboxValueType } from 'antd/es/checkbox/Group';
-
 import { getColumns } from '../TripPage.data';
 import {
   TripSectionModal,
@@ -22,6 +21,7 @@ import { updateTrip } from '../../../api/apiTrips';
 import { sectionTypesList } from '../../../constants/system.constants';
 import { getTripSummaryValues } from '../../../services/TripSummary.service';
 import { TripSummary } from '../TripSummary/TripSummary';
+import { isNow } from '../../../helpers/time';
 
 const { Title } = Typography;
 const CheckboxGroup = Checkbox.Group;
@@ -120,6 +120,9 @@ export const TripSections: FC<TripSectionsProps> = ({ trip }) => {
             dataSource={data}
             pagination={false}
             className={styles.table}
+            rowClassName={({ dateTimeStart, dateTimeEnd }) => {
+              return isNow(dateTimeStart, dateTimeEnd) ? styles.current : '';
+            }}
           />
         ) : (
           <div>

@@ -24,7 +24,7 @@ import {
   statusTypesList,
   transportTypesList,
 } from '../../../constants/system.constants';
-import { getHumanizedTimeDuration } from '../../../helpers/helpers';
+import { getHumanizedTimeDuration } from '../../../helpers/time';
 
 import styles from './section-modal.module.scss';
 import { Section, SectionType } from '../../../models/models';

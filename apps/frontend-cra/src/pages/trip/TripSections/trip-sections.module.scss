@@ -6,6 +6,14 @@
 .table {
   min-width: 1200px;
   max-width: 1300px;
+
+  .current {
+    background-color: #00800024;
+
+    &:hover {
+      background-color: #00800024;
+    }
+  }
 }
 
 .filter {

@@ -1,7 +1,7 @@
 import { Trip } from '../models/models';
 import * as dayjs from 'dayjs';
 import * as duration from 'dayjs/plugin/duration';
-import { getHumanizedTimeDuration } from '../helpers/helpers';
+import { getHumanizedTimeDuration } from '../helpers/time';
 
 dayjs.extend(duration);
 

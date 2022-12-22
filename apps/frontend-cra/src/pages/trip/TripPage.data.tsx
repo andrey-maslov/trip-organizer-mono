@@ -15,7 +15,7 @@ import {
 } from 'react-icons/fa';
 import { ImAirplane } from 'react-icons/im';
 import styles from './trip-page.module.scss';
-import { getHumanizedTimeDuration } from '../../helpers/helpers';
+import {getHumanizedTimeDuration, isNow} from '../../helpers/time';
 import {
   PlacementType,
   Section,
@@ -107,10 +107,14 @@ export const getColumns = (
       dataIndex: 'start',
       key: 'start',
       width: 130,
-      render: (_, { dateTimeStart: start }) => {
+      className: ``,
+      render: (_, { dateTimeStart: start, dateTimeEnd: end }) => {
+        console.log(isNow(start, end));
         return (
           <div>
-            {dayjs(start).isValid() ? dayjs(start).format('DD MMM YYYY') : '-'}
+            {dayjs(start).isValid()
+              ? dayjs(start).format('DD MMM YYYY HH:mm')
+              : '-'}
           </div>
         );
       },
@@ -120,11 +124,8 @@ export const getColumns = (
       dataIndex: 'duration',
       key: 'duration',
       width: 130,
-      render: (_, { dateTimeStart, dateTimeEnd }) => {
-        const formattedHumanizedDiff = getHumanizedTimeDuration(
-          dateTimeStart,
-          dateTimeEnd
-        );
+      render: (_, { dateTimeStart: start, dateTimeEnd: end }) => {
+        const formattedHumanizedDiff = getHumanizedTimeDuration(start, end);
         return <div>{formattedHumanizedDiff || '-'}</div>;
       },
     },
@@ -180,7 +181,8 @@ export const getColumns = (
 
           return (
             <div>
-              {paymentTotalAmount}{currencies[DEFAULT_CURRENCY].symbol}
+              {paymentTotalAmount}
+              {currencies[DEFAULT_CURRENCY].symbol}
             </div>
           );
         } else {
