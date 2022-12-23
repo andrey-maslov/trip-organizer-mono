@@ -1,13 +1,12 @@
-import { ColumnsType } from 'antd/es/table';
-import * as dayjs from 'dayjs';
-import { Button, Popconfirm, Tag, Typography } from 'antd';
 import React from 'react';
+import * as dayjs from 'dayjs';
+import { ColumnsType } from 'antd/es/table';
+import { Button, Popconfirm, Tag, Typography } from 'antd';
 import {
   FaBus,
   FaCarSide,
   FaExternalLinkAlt,
   FaRegEdit,
-  FaRoad,
   FaQuestion,
   FaTrain,
   FaTrashAlt,
@@ -15,7 +14,7 @@ import {
 } from 'react-icons/fa';
 import { ImAirplane } from 'react-icons/im';
 import styles from './trip-page.module.scss';
-import {getHumanizedTimeDuration, isNow} from '../../helpers/time';
+import { getHumanizedTimeDuration } from '../../helpers/time';
 import {
   PlacementType,
   Section,
@@ -56,12 +55,12 @@ export const getColumns = (
   updateRow: (id: string) => void
 ): ColumnsType<Section> => {
   return [
-    {
-      title: 'No.',
-      dataIndex: 'index',
-      key: 'index',
-      width: 55,
-    },
+    // {
+    //   title: 'No.',
+    //   dataIndex: 'index',
+    //   key: 'index',
+    //   width: 30,
+    // },
     {
       title: 'Journey part name',
       dataIndex: 'name',
@@ -72,7 +71,7 @@ export const getColumns = (
       title: 'Transport or placement',
       dataIndex: 'transport',
       key: 'transport',
-      width: 190,
+      width: 160,
       render: (_, { type, transportType, placementType, serviceProvider }) => {
         const approachType =
           type === 'road'
@@ -106,14 +105,13 @@ export const getColumns = (
       title: 'Start Date',
       dataIndex: 'start',
       key: 'start',
-      width: 130,
+      width: 100,
       className: ``,
       render: (_, { dateTimeStart: start, dateTimeEnd: end }) => {
-        console.log(isNow(start, end));
         return (
           <div>
             {dayjs(start).isValid()
-              ? dayjs(start).format('DD MMM YYYY HH:mm')
+              ? dayjs(start).format('DD MMM YY HH:mm')
               : '-'}
           </div>
         );
@@ -123,7 +121,7 @@ export const getColumns = (
       title: 'Duration',
       dataIndex: 'duration',
       key: 'duration',
-      width: 130,
+      width: 110,
       render: (_, { dateTimeStart: start, dateTimeEnd: end }) => {
         const formattedHumanizedDiff = getHumanizedTimeDuration(start, end);
         return <div>{formattedHumanizedDiff || '-'}</div>;
@@ -133,7 +131,7 @@ export const getColumns = (
       title: 'Status',
       dataIndex: 'status',
       key: 'status',
-      width: 130,
+      width: 110,
       render: (_, { status }) => {
         const color = statusMap[status];
         return (
@@ -149,6 +147,7 @@ export const getColumns = (
       title: 'Payments',
       dataIndex: 'payments',
       key: 'payments',
+      width: 130,
       render: (_, { payments }) => {
         return (
           <div>
@@ -169,10 +168,10 @@ export const getColumns = (
       },
     },
     {
-      title: 'Total Price',
+      title: 'Price',
       dataIndex: 'price',
       key: 'price',
-      width: 110,
+      width: 100,
       render: (_, { payments }) => {
         if (payments && payments.length > 0) {
           const paymentTotalAmount = payments

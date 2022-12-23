@@ -1,16 +1,26 @@
 import React, { useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { Button, Divider, Tooltip, Typography, Row, Col } from 'antd';
+import {
+  Button,
+  Divider,
+  Tooltip,
+  Typography,
+  Row,
+  Col,
+  Statistic,
+} from 'antd';
+import type { countdownValueType } from 'antd/es/statistic/utils';
 import * as dayjs from 'dayjs';
 import { TripSections } from './TripSections/TripSections';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
 import { fetchOneTrip, updateTrip } from '../../api/apiTrips';
-import { Trip } from '../../models/models';
-import { getHumanizedTimeDuration } from '../../helpers/time';
+import { Section, Trip } from '../../models/models';
+import { getHumanizedTimeDuration, isTimeInFuture} from '../../helpers/time';
 import { TripModal } from '../main/TripModal/TripModal';
 import styles from './trip-page.module.scss';
 
 const { Title, Paragraph } = Typography;
+const { Countdown } = Statistic;
 
 export const TripPage: React.FC = (): JSX.Element => {
   const { id } = useParams();
@@ -45,6 +55,37 @@ export const TripPage: React.FC = (): JSX.Element => {
 
   const { name, dateTimeStart, dateTimeEnd, description } = trip;
 
+  const getClosesSectionStart = (
+    sections: Section[]
+  ): { sectionName: string; countdownValue: countdownValueType } | null => {
+    if (!sections || !Array.isArray(sections) || sections.length === 0) {
+      return null;
+    }
+
+    let sectionName = '';
+    let countdownValue: number | string = 0;
+
+    try {
+      for (let i = 0; i < sections.length; i++) {
+        if (sections[i].dateTimeStart && isTimeInFuture(sections[i].dateTimeStart)) {
+          sectionName = sections[i].name || '';
+          countdownValue = sections[i].dateTimeStart || 0;
+          break;
+        }
+      }
+      return {
+        sectionName,
+        countdownValue,
+      };
+    } catch (e) {
+      return {
+        sectionName,
+        countdownValue,
+      };
+    }
+
+  };
+
   return (
     <Row justify="center">
       <Col span={23}>
@@ -65,7 +106,6 @@ export const TripPage: React.FC = (): JSX.Element => {
           </strong>
           <span>({getHumanizedTimeDuration(dateTimeStart, dateTimeEnd)})</span>
         </Paragraph>
-
         <Tooltip title="Edit journey">
           <Button
             type="primary"
@@ -76,6 +116,13 @@ export const TripPage: React.FC = (): JSX.Element => {
             Edit journey
           </Button>
         </Tooltip>
+        <Divider />
+        {getClosesSectionStart(trip.sections) && (
+          <Countdown
+            title={getClosesSectionStart(trip.sections)?.sectionName}
+            value={getClosesSectionStart(trip.sections)?.countdownValue}
+          />
+        )}
         <Divider />
         <TripSections trip={trip} />
 

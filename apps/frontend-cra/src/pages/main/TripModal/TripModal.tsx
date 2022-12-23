@@ -52,7 +52,7 @@ export const TripModal: React.FC<TripModalProps> = ({
     ...initialData,
     dateTimeStart: dayjs(initialData?.dateTimeStart),
     dateTimeEnd: dayjs(initialData?.dateTimeEnd),
-  }
+  };
 
   return (
     <Modal
