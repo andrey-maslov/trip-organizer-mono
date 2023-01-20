@@ -4,46 +4,45 @@ class TripController {
   async create(req, res) {
     try {
       const trip = await tripService.create(req.body);
-      res.status(201).json(trip);
+      res.status(201).send(trip);
     } catch (e) {
-      console.log(e)
-      res.status(500).json(e);
+      res.status(500).send(e);
     }
   }
 
   async getOne(req, res) {
     try {
       const trip = await tripService.getOne(req.params.id);
-      res.json(trip);
+      res.send(trip);
     } catch (e) {
-      res.status(500).json(e);
+      res.status(500).send(e);
     }
   }
 
   async getAll(req, res) {
     try {
       const trips = await tripService.getAll();
-      res.json(trips);
+      return res.send(trips);
     } catch (e) {
-      res.status(500).json(e);
+      res.status(500).send(e);
     }
   }
 
   async update(req, res) {
     try {
       const updatedTrip = await tripService.update(req.body)
-      res.json(updatedTrip);
+      res.send(updatedTrip);
     } catch (e) {
-      res.status(500).json(e);
+      res.status(500).send(e);
     }
   }
 
   async delete(req, res) {
     try {
       const trip = await tripService.delete(req.params.id);
-      res.json(trip);
+      res.send(trip);
     } catch (e) {
-      res.status(500).json(e);
+      res.status(500).send(e);
     }
   }
 }

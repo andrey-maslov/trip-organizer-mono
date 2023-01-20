@@ -50,3 +50,7 @@ Deploy to [railway.app](https://railway.app/) both frontend and backend
 [React Query full guide](https://my-js.org/docs/guide/react-query/)
 
 [React Query TS](https://tkdodo.eu/blog/react-query-and-type-script)
+
+[Fastify 1](https://www.section.io/engineering-education/fastify-fauna-nodejs/)
+
+[Fastify 2](https://dev.to/itsrennyman/how-i-structure-my-fastify-application-1j93)
