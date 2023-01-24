@@ -35,7 +35,7 @@ testem.log
 /typings
 /mongo-data
 .env
-/.env
+apps/frontend-cra/.env
 
 # System Files
 .DS_Store
