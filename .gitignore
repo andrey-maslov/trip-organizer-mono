@@ -34,6 +34,8 @@ yarn-error.log
 testem.log
 /typings
 /mongo-data
+.env
+/.env
 
 # System Files
 .DS_Store

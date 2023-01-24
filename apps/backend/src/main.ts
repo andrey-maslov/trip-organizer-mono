@@ -25,7 +25,8 @@ async function startApp() {
       console.log(`Started at port ${PORT}`)
     );
   } catch (err) {
-    // fastify.log.error(err)
+    // fastify.log.error(err);
+    console.log('Error:', err)
     process.exit(1)
   }
 }
