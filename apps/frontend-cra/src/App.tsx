@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import { Routes, Route } from 'react-router-dom';
 import { MainPage } from './pages/main/MainPage';
 import { TripPage } from './pages/trip/TripPage';
+import { HealthPage } from './pages/health/HealthPage';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { ReactQueryDevtools } from 'react-query/devtools';
 import { PageLayout } from './components/Layout/PageLayout';
@@ -36,6 +37,7 @@ export function App(): JSX.Element {
         <Routes>
           <Route path="/" element={<MainPage />} />
           <Route path="trip/:id" element={<TripPage />} />
+          <Route path="/health" element={<HealthPage />} />
           <Route path="*" element={<p>There&apos;s nothing here: 404!</p>} />
         </Routes>
       </PageLayout>

@@ -16,6 +16,15 @@ server.post("/api/trips", tripController.create);
 server.put("/api/trips", tripController.update);
 server.delete("/api/trips/:id", tripController.delete);
 
+// Health check
+server.get("/api/health", async (req, res) => res.status(200).send('Works fine'));
+server.get("/api/health/vars", async (req, res) => res.status(200).send({
+  port: PORT,
+  env: process.env.NODE_ENV,
+  dbUri,
+  dbConnectionState: mongoose.connection.readyState
+}));
+
 async function startApp() {
   try {
     await mongoose.connect(dbUri, mongooseConnectOptions, () => {

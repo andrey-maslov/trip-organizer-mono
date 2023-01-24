@@ -7,4 +7,6 @@ const baseApiPath = isDev ? apiPathDev : apiPathProd;
 
 export const API = {
   TRIPS: `${baseApiPath}/api/trips`,
+  HEALTH: `${baseApiPath}/api/health`,
+  VARS: `${baseApiPath}/api/health/vars`,
 };

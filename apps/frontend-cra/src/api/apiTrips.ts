@@ -36,3 +36,18 @@ export const addTripSection = async (
     .put(`${API.TRIPS}/${tripId}`, sectionData)
     .then((res) => res.data);
 };
+
+// API health check
+export const checkAPIHealth = async (): Promise<string> => {
+  return axios.get(API.HEALTH).then((res) => res.data);
+};
+
+// API variables check
+export const checkAPIVars = async (): Promise<{
+  port: number | undefined;
+  env: string | undefined;
+  dbUri: string | undefined;
+  dbConnectionState: number | undefined;
+}> => {
+  return axios.get(API.VARS).then((res) => res.data);
+};
