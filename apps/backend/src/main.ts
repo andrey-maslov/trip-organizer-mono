@@ -1,4 +1,5 @@
 import fastify from 'fastify';
+import cors from '@fastify/cors';
 import mongoose from 'mongoose';
 import { DB_URL } from './db/db.constants';
 import { mongooseConnectOptions } from './db/db-connect.config';
@@ -30,6 +31,11 @@ server.get('/api/health/vars', async (req, res) =>
 );
 
 async function startApp() {
+  // Enables the use of CORS in a Fastify application.
+  await server.register(cors, {
+    origin: false
+  })
+
   try {
     await mongoose.connect(dbUri, mongooseConnectOptions, () => {
       console.log('db connected');
