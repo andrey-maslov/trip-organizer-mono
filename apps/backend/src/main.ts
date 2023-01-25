@@ -32,9 +32,7 @@ server.get('/api/health/vars', async (req, res) =>
 
 async function startApp() {
   // Enables the use of CORS in a Fastify application.
-  await server.register(cors, {
-    origin: false
-  })
+  await server.register(cors, {})
 
   try {
     await mongoose.connect(dbUri, mongooseConnectOptions, () => {
