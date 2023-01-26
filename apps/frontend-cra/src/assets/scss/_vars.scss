@@ -2,17 +2,18 @@
   font-weight: normal;
   font-family: 'Roboto Condensed';
   font-style: normal;
-  src: url('https://static.cdn.epam.com/uploads/690afa39a93c88c4dd13758fe1d869d5/EPM-UUI/fonts/RobotoCondensed-Regular.ttf') format('truetype');
+  src: url('https://static.cdn.epam.com/uploads/690afa39a93c88c4dd13758fe1d869d5/EPM-UUI/fonts/RobotoCondensed-Regular.ttf')
+    format('truetype');
 }
 
 $font-sans: 'Sans Regular', 'Arial', sans-serif;
 
-$accent: #008ACE;
-$accent2: #83B3C9;
+$accent: #008ace;
+$accent2: #83b3c9;
 $text: #303240;
 
-$red: #D73A49;
-$green: #26AF7E;
+$red: #d73a49;
+$green: #26af7e;
 $danger: $red;
 $warning: orange;
 $success: $green;

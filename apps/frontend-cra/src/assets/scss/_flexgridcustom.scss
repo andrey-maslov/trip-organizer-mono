@@ -48,11 +48,11 @@ $xl-breakpoint: 1360px;
   }
 }
 @media only screen and (min-width: $xl-breakpoint) {
-  .container, .container-fluid {
+  .container,
+  .container-fluid {
     max-width: $xl-max;
   }
 }
-
 
 .row {
   display: flex;
@@ -70,9 +70,6 @@ $xl-breakpoint: 1360px;
 .col.reverse {
   flex-direction: column-reverse;
 }
-
-
-
 
 .col-xs,
 .col-xs-1,
@@ -1118,7 +1115,7 @@ $xl-breakpoint: 1360px;
   }
 }
 
-@media only screen and (min-width:$md-breakpoint) and (max-width: $lg-breakpoint - 1) {
+@media only screen and (min-width: $md-breakpoint) and (max-width: $lg-breakpoint - 1) {
   .hidden-md {
     display: none;
   }

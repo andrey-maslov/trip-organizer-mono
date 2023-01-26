@@ -1,4 +1,4 @@
-@import "../../../assets/scss/vars.scss";
+@import '../../../assets/scss/vars.scss';
 
 .duration {
   margin-left: 20px;
@@ -7,11 +7,9 @@
 }
 
 @media only screen and (max-width: $sm-breakpoint) {
-
   .duration {
     margin-left: 0;
     margin-top: 0;
     margin-bottom: 20px;
   }
-
 }
