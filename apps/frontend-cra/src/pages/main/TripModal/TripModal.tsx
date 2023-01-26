@@ -1,8 +1,8 @@
 import React from 'react';
 import * as dayjs from 'dayjs';
 import { Form, Input, Modal, DatePicker, Row, Col } from 'antd';
-import {Trip} from "../../../models/models";
-import {FORM_GUTTER} from "../../../constants/interface.constants";
+import { Trip } from '@/shared/models';
+import { FORM_GUTTER } from '@/shared/constants';
 
 const { TextArea } = Input;
 
@@ -31,14 +31,16 @@ export const TripModal: React.FC<TripModalProps> = ({
       .then((values: TripValues) => {
         form.resetFields();
 
-        const start = values.dateTimeStart ? values.dateTimeStart.toString() : null;
+        const start = values.dateTimeStart
+          ? values.dateTimeStart.toString()
+          : null;
         const end = values.dateTimeEnd ? values.dateTimeEnd.toString() : null;
 
         // console.log(dateStart)
-        const dataToSave = { ...values, dateStart: start, dateEnd: end }
+        const dataToSave = { ...values, dateStart: start, dateEnd: end };
 
         if (initialData?._id) {
-          onUpdate({ ...dataToSave, _id: initialData._id});
+          onUpdate({ ...dataToSave, _id: initialData._id });
         } else {
           onCreate(dataToSave);
         }

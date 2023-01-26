@@ -15,18 +15,20 @@ const queryClient = new QueryClient();
 export function App(): JSX.Element {
   useEffect(() => {
     const getCurrencyRates = async () => {
-      try {
-        const result = await fetchCurrencyRates();
-        if (result?.success) {
-          window.localStorage.setItem('currencyRates', JSON.stringify(result))
-        }
-      } catch (e) {
-        console.error('Error', e);
-      }
+      // try {
+      //   const result = await fetchCurrencyRates();
+      //   if (result?.success) {
+      //     console.log('result?.success')
+      //     // localStorage.setItem('currencyRates', JSON.stringify(result))
+      //     window.sessionStorage.setItem('sss', 'asd')
+      //   }
+      // } catch (e) {
+      //   console.error('Error', e);
+      // }
     };
 
     // TODO check the date
-    if (window.localStorage.currencyRates === undefined) {
+    if (window.localStorage.getItem('currencyRates')) {
       void getCurrencyRates();
     }
   }, []);

@@ -1,6 +1,6 @@
 // import { CurrencyISOName } from '../models/models';
 
-import {Trip} from "../models/models";
+import { Trip } from '@/shared/models';
 
 const fakeDate = '2022-11-29T16:32:33.043Z';
 const fakeDateEnd = '2022-11-29T21:32:33.043Z';

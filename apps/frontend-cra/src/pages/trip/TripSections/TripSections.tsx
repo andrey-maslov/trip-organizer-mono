@@ -14,11 +14,11 @@ import {
   TripSectionModal,
   TripSectionValues,
 } from '../TripSectionModal/TripSectionModal';
-import { Section, Trip } from '../../../models/models';
+import { Section, Trip } from '@/shared/models';
 import styles from './trip-sections.module.scss';
 import { useMutation, useQueryClient } from 'react-query';
 import { updateTrip } from '../../../api/apiTrips';
-import { sectionTypesList } from '../../../constants/system.constants';
+import { sectionTypesList } from '@/shared/constants';
 import { getTripSummaryValues } from '../../../services/TripSummary.service';
 import { TripSummary } from '../TripSummary/TripSummary';
 import { isNow } from '../../../helpers/time';

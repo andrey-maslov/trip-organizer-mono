@@ -12,7 +12,6 @@ import {
   Button,
 } from 'antd';
 import { AiOutlineMinusCircle } from 'react-icons/ai';
-import { FORM_GUTTER } from '../../../constants/interface.constants';
 import dayjs from 'dayjs';
 import type { Dayjs } from 'dayjs';
 import {
@@ -23,17 +22,18 @@ import {
   sectionTypesList,
   statusTypesList,
   transportTypesList,
-} from '../../../constants/system.constants';
+  FORM_GUTTER,
+} from '@/shared/constants';
 import { getHumanizedTimeDuration } from '../../../helpers/time';
 
 import styles from './section-modal.module.scss';
-import { Section, SectionType } from '../../../models/models';
+import { Section, SectionType } from '@/shared/models';
 
 const { RangePicker } = DatePicker;
 const { Paragraph } = Typography;
 const { TextArea } = Input;
 
-export type DateRangeType = null | (Dayjs | null)[]
+export type DateRangeType = null | (Dayjs | null)[];
 
 const serviceProviderType: Record<SectionType, Record<string, any>> = {
   road: {

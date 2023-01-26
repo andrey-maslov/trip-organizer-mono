@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { API } from './api.constants';
-import { Section, Trip } from '../models/models';
+import { Section, Trip } from '@/shared/models';
 
 export type Params = {
   name?: number;

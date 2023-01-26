@@ -15,7 +15,9 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
-      "@/shared/helpers": ["libs/shared/src/helpers/helper.ts"]
+      "@/shared/helpers": ["libs/shared/helpers/helper.ts"],
+      "@/shared/constants": ["libs/shared/constants/index.ts"],
+      "@/shared/models": ["libs/shared/models/models.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]

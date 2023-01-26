@@ -1,7 +1,7 @@
 const apiPathProd = 'https://trip-organizer-api.up.railway.app';
 const apiPathDev = '';
 
-const isDev = process.env.NODE_ENV === 'development'
+const isDev = process.env.NODE_ENV === 'development';
 
 const baseApiPath = isDev ? apiPathDev : apiPathProd;
 

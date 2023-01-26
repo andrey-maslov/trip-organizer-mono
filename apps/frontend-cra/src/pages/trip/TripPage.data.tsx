@@ -15,17 +15,12 @@ import {
 import { ImAirplane } from 'react-icons/im';
 import styles from './trip-page.module.scss';
 import { getHumanizedTimeDuration } from '../../helpers/time';
-import {
-  PlacementType,
-  Section,
-  Status,
-  TransportType,
-} from '../../models/models';
+import { PlacementType, Section, Status, TransportType } from '@/shared/models';
 import {
   currencies,
   DEFAULT_CURRENCY,
   DEFAULT_SECTION_STATUS,
-} from '../../constants/system.constants';
+} from '@/shared/constants';
 
 const { Title } = Typography;
 
@@ -178,10 +173,14 @@ export const getColumns = (
             .map((payment) => payment.price?.amount || 0)
             .reduce((a, b) => a + b);
 
+          // TODO fix approach of choosing currency inside one section (???)
+          // user should chose one currency ... or ...
+          const currency = payments[0]?.price?.currency || DEFAULT_CURRENCY;
+
           return (
             <div>
               {paymentTotalAmount}
-              {currencies[DEFAULT_CURRENCY].symbol}
+              {currencies[currency].symbol}
             </div>
           );
         } else {

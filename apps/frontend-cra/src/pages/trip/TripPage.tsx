@@ -14,11 +14,10 @@ import * as dayjs from 'dayjs';
 import { TripSections } from './TripSections/TripSections';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
 import { fetchOneTrip, updateTrip } from '../../api/apiTrips';
-import { Section, Trip } from '../../models/models';
+import { Section, Trip } from '@/shared/models';
 import { getHumanizedTimeDuration, isTimeInFuture } from '../../helpers/time';
 import { TripModal } from '../main/TripModal/TripModal';
 import styles from './trip-page.module.scss';
-import { getNum } from '@/shared/helpers';
 
 const { Title, Paragraph } = Typography;
 const { Countdown } = Statistic;
@@ -55,9 +54,6 @@ export const TripPage: React.FC = (): JSX.Element => {
   }
 
   const { name, dateTimeStart, dateTimeEnd, description } = trip;
-
-  const num = getNum(5);
-  console.log(num);
 
   const getClosesSectionStart = (
     sections: Section[]

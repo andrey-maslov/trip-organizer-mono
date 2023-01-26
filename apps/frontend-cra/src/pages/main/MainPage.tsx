@@ -11,7 +11,7 @@ import {
 import { TripModal } from './TripModal/TripModal';
 import styles from './main.module.scss';
 import { FaTrashAlt, FaRegEdit } from 'react-icons/fa';
-import {Trip} from "../../models/models";
+import { Trip } from '@/shared/models';
 
 const { Title } = Typography;
 

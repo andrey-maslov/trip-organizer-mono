@@ -1,7 +1,7 @@
 import React from 'react';
 import type { FC } from 'react';
 import styles from '../TripSections/trip-sections.module.scss';
-import { DEFAULT_CURRENCY } from '../../../constants/system.constants';
+import { DEFAULT_CURRENCY } from '@/shared/constants';
 import { TripSummaryValues } from '../../../services/TripSummary.service';
 
 type TripSummaryProps = {

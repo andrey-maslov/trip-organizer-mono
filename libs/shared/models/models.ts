@@ -4,7 +4,8 @@ import {
   sectionTypesList,
   statusTypesList,
   transportTypesList,
-} from '../constants/system.constants';
+  userCurrency,
+} from '../constants';
 
 export type Trip = {
   name: string;
@@ -54,4 +55,12 @@ export type Payment = {
     amount: number;
     currency: CurrencyISOName;
   };
+};
+
+export type CurrencyRates = {
+  success: boolean;
+  timestamp: number;
+  base: typeof userCurrency;
+  date: string;
+  rates: Record<Exclude<CurrencyISOName, typeof userCurrency>, number>;
 };

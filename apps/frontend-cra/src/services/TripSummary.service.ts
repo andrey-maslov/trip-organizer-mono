@@ -1,7 +1,9 @@
-import { Trip } from '../models/models';
-import * as dayjs from 'dayjs';
-import * as duration from 'dayjs/plugin/duration';
+import { CurrencyISOName, CurrencyRates, Trip } from '@/shared/models';
+import dayjs from 'dayjs';
+import duration from 'dayjs/plugin/duration';
 import { getHumanizedTimeDuration } from '../helpers/time';
+import { defaultCurrencyRates, userCurrency } from '@/shared/constants';
+import { safelyParseJSON } from '@/shared/helpers';
 
 dayjs.extend(duration);
 
@@ -17,7 +19,11 @@ export type TripSummaryValues = {
   totalCost: number;
   roadCost: number;
   stayCost: number;
-}
+};
+
+const currencyRates: CurrencyRates =
+  safelyParseJSON(localStorage.getItem('currencyRates')) ||
+  defaultCurrencyRates;
 
 export const getTripSummaryValues = (trip: Trip): TripSummaryValues => {
   const { sections, dateTimeStart, dateTimeEnd } = trip;
@@ -42,13 +48,13 @@ export const getTripSummaryValues = (trip: Trip): TripSummaryValues => {
     const stayDurationsList: number[] = [];
 
     sections.forEach(({ payments, type, dateTimeStart, dateTimeEnd }) => {
-      // Road
+      // ROAD
       if (type === 'road') {
         // Payments
         if (payments) {
           payments.forEach(({ price }) => {
             roadCostsList.push(
-              typeof price?.amount === 'number' ? price.amount : 0
+              convertAmount(price?.amount, price?.currency, currencyRates)
             );
           });
         }
@@ -60,13 +66,13 @@ export const getTripSummaryValues = (trip: Trip): TripSummaryValues => {
         }
       }
 
-      // Stay
+      // STAY
       if (type === 'stay') {
         // Payments
         if (payments) {
           payments.forEach(({ price }) => {
             stayCostsList.push(
-              typeof price?.amount === 'number' ? price.amount : 0
+              convertAmount(price?.amount, price?.currency, currencyRates)
             );
           });
         }
@@ -107,4 +113,30 @@ export const getTripSummaryValues = (trip: Trip): TripSummaryValues => {
 
 function getReducedSum(list: number[]): number {
   return list.length > 0 ? list.reduce((a, b) => a + b) : 0;
+}
+
+/**
+ * Convert amount from one currency to base (user) currency
+ * @param amount
+ * @param currency
+ * @param currencyRates
+ */
+export function convertAmount(
+  amount: number | undefined,
+  currency: CurrencyISOName | undefined,
+  currencyRates: CurrencyRates
+): number {
+  if (!amount || !Number(amount) || !currency) {
+    return 0;
+  }
+  if (currency === currencyRates.base) {
+    return amount;
+  } else {
+    const result =
+      amount /
+      currencyRates.rates[
+        currency as Exclude<CurrencyISOName, typeof userCurrency>
+      ];
+    return +result.toFixed(2) || 0;
+  }
 }

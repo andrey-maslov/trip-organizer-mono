@@ -1,16 +1,12 @@
-import axios from 'axios';
-import { CurrencyISOName } from '../models/models';
+import { currencyISONameList, userCurrency } from '@/shared/constants';
+import { CurrencyRates } from '@/shared/models';
 
-export type CurrencyRates = {
-  success: boolean;
-  timestamp: number;
-  base: CurrencyISOName;
-  date: string;
-  rates: Record<CurrencyISOName, number>;
+const getCurrencyRatesUrl = (currenciesList = currencyISONameList): string => {
+  const currenciesStr = currenciesList
+    .filter((curr) => curr !== userCurrency)
+    .join(',');
+  return `https://api.apilayer.com/exchangerates_data/latest?base=${userCurrency}&symbols=${currenciesStr}`;
 };
-
-const currencyRatesUrl =
-  'https://api.apilayer.com/exchangerates_data/latest?base=USD&symbols=EUR,BYN';
 
 const myHeaders = new Headers();
 myHeaders.append('apikey', process.env.NX_BASE_CURRENCY_API_KEY || '');
@@ -22,7 +18,7 @@ const requestOptions = {
 } as RequestInit;
 
 export const fetchCurrencyRates = (): Promise<CurrencyRates> => {
-  return fetch(currencyRatesUrl, requestOptions).then((response) =>
+  return fetch(getCurrencyRatesUrl(), requestOptions).then((response) =>
     response.json()
   );
 };

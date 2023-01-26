@@ -1,5 +1,6 @@
 import {
   CurrencyISOName,
+  CurrencyRates,
   SectionType,
   Status,
 } from '../models/models';
@@ -30,21 +31,40 @@ export const DEFAULT_SECTION_TYPE: SectionType = 'road';
 export const currencyISONameList = ['EUR', 'USD', 'PLN', 'BYN'] as const;
 export const DEFAULT_CURRENCY: CurrencyISOName = 'EUR';
 
-export const currencies: Record<CurrencyISOName, { name: string, symbol: string }> = {
+export const currencies: Record<
+  CurrencyISOName,
+  { name: string; symbol: string; nameISO: CurrencyISOName }
+> = {
   EUR: {
     name: 'Euro',
     symbol: '€',
+    nameISO: 'EUR',
   },
   USD: {
     name: 'Dollar USA',
     symbol: '$',
+    nameISO: 'USD',
   },
   PLN: {
     name: 'Polish Zloty',
     symbol: 'zł',
+    nameISO: 'PLN',
   },
   BYN: {
     name: 'Belarusian rouble',
     symbol: 'Br',
+    nameISO: 'BYN',
+  },
+};
+
+export const defaultCurrencyRates: CurrencyRates = {
+  success: true,
+  timestamp: 1674737763,
+  base: 'EUR',
+  date: '2023-01-26',
+  rates: {
+    USD: 1.089788,
+    PLN: 4.719783,
+    BYN: 2.753763,
   },
 };
