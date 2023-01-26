@@ -13,6 +13,7 @@ export type Trip = {
   dateTimeEnd: string | null;
   description: string;
   sections: Section[];
+  summary: TripSummaryValues;
   _id: string;
 };
 
@@ -63,4 +64,18 @@ export type CurrencyRates = {
   base: typeof userCurrency;
   date: string;
   rates: Record<Exclude<CurrencyISOName, typeof userCurrency>, number>;
+};
+
+export type TripSummaryValues = {
+  totalTimeMs: number;
+  totalTimeStr: string;
+  roadTimeMs: number;
+  roadTimeStr: string;
+  stayTimeMs: number;
+  stayTimeStr: string;
+  waitingTimeMs: number;
+  waitingTimeStr: string;
+  totalCost: number;
+  roadCost: number;
+  stayCost: number;
 };

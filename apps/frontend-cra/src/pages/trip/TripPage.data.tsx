@@ -14,7 +14,7 @@ import {
 } from 'react-icons/fa';
 import { ImAirplane } from 'react-icons/im';
 import styles from './trip-page.module.scss';
-import { getHumanizedTimeDuration } from '../../helpers/time';
+import { getHumanizedTimeDuration } from '@/shared/utils';
 import { PlacementType, Section, Status, TransportType } from '@/shared/models';
 import {
   currencies,

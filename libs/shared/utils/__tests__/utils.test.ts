@@ -1,6 +1,6 @@
-import { convertAmount } from '../TripSummary.service';
-import { defaultCurrencyRates } from '@/shared/constants';
-import { CurrencyISOName } from '@/shared/models';
+import { convertAmount } from '../utils';
+import { CurrencyISOName } from '../../models/models';
+import { defaultCurrencyRates } from '../../constants';
 
 describe(convertAmount.name, () => {
   const cases: [number, CurrencyISOName, number][] = [

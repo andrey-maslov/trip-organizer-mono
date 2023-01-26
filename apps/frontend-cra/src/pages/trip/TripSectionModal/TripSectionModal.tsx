@@ -24,7 +24,7 @@ import {
   transportTypesList,
   FORM_GUTTER,
 } from '@/shared/constants';
-import { getHumanizedTimeDuration } from '../../../helpers/time';
+import { getHumanizedTimeDuration } from '@/shared/utils';
 
 import styles from './section-modal.module.scss';
 import { Section, SectionType } from '@/shared/models';

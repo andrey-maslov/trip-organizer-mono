@@ -1,5 +1,5 @@
 import { Schema, model } from 'mongoose';
-import { SectionSchema } from "./Section";
+import { SectionSchema } from './Section';
 
 const TripSchema = new Schema({
   name: { type: String, required: true },

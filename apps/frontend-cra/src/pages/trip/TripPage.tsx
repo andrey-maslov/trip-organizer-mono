@@ -15,7 +15,7 @@ import { TripSections } from './TripSections/TripSections';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
 import { fetchOneTrip, updateTrip } from '../../api/apiTrips';
 import { Section, Trip } from '@/shared/models';
-import { getHumanizedTimeDuration, isTimeInFuture } from '../../helpers/time';
+import { getHumanizedTimeDuration, isTimeInFuture } from '@/shared/utils';
 import { TripModal } from '../main/TripModal/TripModal';
 import styles from './trip-page.module.scss';
 

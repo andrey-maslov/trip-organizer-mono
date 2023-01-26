@@ -19,9 +19,8 @@ import styles from './trip-sections.module.scss';
 import { useMutation, useQueryClient } from 'react-query';
 import { updateTrip } from '../../../api/apiTrips';
 import { sectionTypesList } from '@/shared/constants';
-import { getTripSummaryValues } from '../../../services/TripSummary.service';
 import { TripSummary } from '../TripSummary/TripSummary';
-import { isNow } from '../../../helpers/time';
+import { isNow } from '@/shared/utils';
 
 const { Title } = Typography;
 const CheckboxGroup = Checkbox.Group;
@@ -162,10 +161,10 @@ export const TripSections: FC<TripSectionsProps> = ({ trip }) => {
         )}
       </div>
       <Divider />
-      {trip.sections?.length > 0 && (
+      {trip.sections?.length > 0 && trip?.summary && (
         <div>
           <Title level={4}>Summary</Title>
-          <TripSummary values={getTripSummaryValues(trip)} />
+          <TripSummary values={trip.summary} />
         </div>
       )}
     </>

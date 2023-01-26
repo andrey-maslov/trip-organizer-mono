@@ -1,32 +1,22 @@
-import { CurrencyISOName, CurrencyRates, Trip } from '@/shared/models';
-import dayjs from 'dayjs';
-import duration from 'dayjs/plugin/duration';
-import { getHumanizedTimeDuration } from '../helpers/time';
-import { defaultCurrencyRates, userCurrency } from '@/shared/constants';
-import { safelyParseJSON } from '@/shared/helpers';
+import { CurrencyRates, Trip, TripSummaryValues } from '@/shared/models';
+import * as dayjs from 'dayjs';
+import * as duration from 'dayjs/plugin/duration';
+import { defaultCurrencyRates } from '@/shared/constants';
+import { getHumanizedTimeDuration, round } from '@/shared/utils';
+import { convertAmount, getSum, safelyParseJSON } from '@/shared/utils';
+import * as fs from 'node:fs/promises';
+import * as path from 'node:path';
 
 dayjs.extend(duration);
 
-export type TripSummaryValues = {
-  totalTimeMs: number;
-  totalTimeStr: string;
-  roadTimeMs: number;
-  roadTimeStr: string;
-  stayTimeMs: number;
-  stayTimeStr: string;
-  waitingTimeMs: number;
-  waitingTimeStr: string;
-  totalCost: number;
-  roadCost: number;
-  stayCost: number;
-};
-
-const currencyRates: CurrencyRates =
-  safelyParseJSON(localStorage.getItem('currencyRates')) ||
-  defaultCurrencyRates;
-
-export const getTripSummaryValues = (trip: Trip): TripSummaryValues => {
+export const getTripSummaryValues = async (
+  trip: Trip
+): Promise<TripSummaryValues> => {
   const { sections, dateTimeStart, dateTimeEnd } = trip;
+
+  const currencyRates = (await getCurrencyRates()) || defaultCurrencyRates;
+
+  // console.log('PATH', path.resolve('static', 'currencyRates.json'))
 
   let roadCost = 0;
   let stayCost = 0;
@@ -85,12 +75,12 @@ export const getTripSummaryValues = (trip: Trip): TripSummaryValues => {
       }
     });
 
-    roadCost = getReducedSum(roadCostsList);
-    stayCost = getReducedSum(stayCostsList);
+    roadCost = getSum(roadCostsList);
+    stayCost = getSum(stayCostsList);
 
-    roadTimeMs = getReducedSum(roadDurationsList) || 0;
+    roadTimeMs = getSum(roadDurationsList) || 0;
     roadTimeStr = getHumanizedTimeDuration(roadTimeMs);
-    stayTimeMs = getReducedSum(stayDurationsList) || 0;
+    stayTimeMs = getSum(stayDurationsList) || 0;
     stayTimeStr = getHumanizedTimeDuration(stayTimeMs);
   }
 
@@ -105,38 +95,22 @@ export const getTripSummaryValues = (trip: Trip): TripSummaryValues => {
     waitingTimeStr: getHumanizedTimeDuration(
       totalTripTime - roadTimeMs - stayTimeMs
     ),
-    totalCost: roadCost + stayCost,
+    totalCost: round(roadCost + stayCost, 2),
     roadCost,
     stayCost,
   };
 };
 
-function getReducedSum(list: number[]): number {
-  return list.length > 0 ? list.reduce((a, b) => a + b) : 0;
-}
-
-/**
- * Convert amount from one currency to base (user) currency
- * @param amount
- * @param currency
- * @param currencyRates
- */
-export function convertAmount(
-  amount: number | undefined,
-  currency: CurrencyISOName | undefined,
-  currencyRates: CurrencyRates
-): number {
-  if (!amount || !Number(amount) || !currency) {
-    return 0;
-  }
-  if (currency === currencyRates.base) {
-    return amount;
-  } else {
-    const result =
-      amount /
-      currencyRates.rates[
-        currency as Exclude<CurrencyISOName, typeof userCurrency>
-      ];
-    return +result.toFixed(2) || 0;
+async function getCurrencyRates(): Promise<CurrencyRates | null> {
+  try {
+    //TODO How to get this path???
+    const str = await fs.readFile(
+      '/Users/Andrei_Maslau/myProjects/trip-organizer-mono/apps/backend/src/data/currencyRates.json',
+      { encoding: 'utf8' }
+    );
+    return safelyParseJSON(str);
+  } catch (err) {
+    console.error(err);
+    return null;
   }
 }

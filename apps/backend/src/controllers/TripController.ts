@@ -1,4 +1,4 @@
-import tripService from '../services/TripsService'
+import tripService from '../services/TripsService';
 
 class TripController {
   async create(req, res) {
@@ -30,7 +30,7 @@ class TripController {
 
   async update(req, res) {
     try {
-      const updatedTrip = await tripService.update(req.body)
+      const updatedTrip = await tripService.update(req.body);
       res.send(updatedTrip);
     } catch (e) {
       res.status(500).send(e);
@@ -47,4 +47,4 @@ class TripController {
   }
 }
 
-export default new TripController()
+export default new TripController();
