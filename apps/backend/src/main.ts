@@ -1,3 +1,4 @@
+import * as path from 'node:path';
 import fastify from 'fastify';
 import cors from '@fastify/cors';
 import mongoose from 'mongoose';
@@ -27,6 +28,7 @@ server.get('/api/health/vars', async (req, res) =>
     env: process.env.NODE_ENV,
     dbUri,
     dbConnectionState: mongoose.connection.readyState,
+    path: path.join(process.cwd())
   })
 );
 

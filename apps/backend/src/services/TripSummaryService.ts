@@ -1,11 +1,20 @@
 import { CurrencyRates, Trip, TripSummaryValues } from '@/shared/models';
 import * as dayjs from 'dayjs';
 import * as duration from 'dayjs/plugin/duration';
-import { defaultCurrencyRates } from '@/shared/constants';
-import { getHumanizedTimeDuration, round } from '@/shared/utils';
+import {
+  currencyISONameList,
+  defaultCurrencyRates,
+  userCurrency,
+} from '@/shared/constants';
+import {
+  getHumanizedTimeDuration,
+  round,
+  safelyStringifyJSON,
+} from '@/shared/utils';
 import { convertAmount, getSum, safelyParseJSON } from '@/shared/utils';
 import * as fs from 'node:fs/promises';
 import * as path from 'node:path';
+import axios from 'axios';
 
 dayjs.extend(duration);
 
@@ -102,15 +111,46 @@ export const getTripSummaryValues = async (
 };
 
 async function getCurrencyRates(): Promise<CurrencyRates | null> {
+  const fileName = 'currencyRates.json';
+  const pathToData = path.join(process.cwd(), './data/', fileName);
+
   try {
-    //TODO How to get this path???
-    const str = await fs.readFile(
-      '/Users/Andrei_Maslau/myProjects/trip-organizer-mono/apps/backend/src/data/currencyRates.json',
-      { encoding: 'utf8' }
-    );
+    const str = await fs.readFile(pathToData, { encoding: 'utf8' });
+
+    // TODO Need to check date
+
     return safelyParseJSON(str);
   } catch (err) {
-    console.error(err);
-    return null;
+    // Fetch data from API
+    const data = await fetchCurrencyRates(getCurrencyRatesUrl());
+    fs.mkdir(path.join(process.cwd(), './data/'))
+      .then(() => {
+        fs.writeFile(pathToData, safelyStringifyJSON(data));
+      })
+      .catch((err) => console.log('Error when make dir', err));
   }
 }
+
+const getCurrencyRatesUrl = (currenciesList = currencyISONameList): string => {
+  const currenciesStr = currenciesList
+    .filter((curr) => curr !== userCurrency)
+    .join(',');
+  return `https://api.apilayer.com/exchangerates_data/latest?base=${userCurrency}&symbols=${currenciesStr}`;
+};
+
+const fetchCurrencyRates = async (url: string): Promise<CurrencyRates> => {
+  const config = {
+    headers: {
+      apikey: process.env.NX_BASE_CURRENCY_API_KEY,
+      // Next header fixes the error 'unexpected end of file'
+      'Accept-Encoding': 'gzip,deflate,compress',
+    },
+  };
+
+  try {
+    const { data } = await axios.get(url, config);
+    return data;
+  } catch (err) {
+    console.log('Error when fetch currency rates: ', err.message);
+  }
+};

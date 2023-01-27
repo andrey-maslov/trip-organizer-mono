@@ -64,7 +64,7 @@ export const defaultCurrencyRates: CurrencyRates = {
   date: '2023-01-26',
   rates: {
     USD: 1.089788,
-    PLN: 4.719783,
+    PLN: 10.719783,
     BYN: 2.753763,
   },
 };
