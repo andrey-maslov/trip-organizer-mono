@@ -118,16 +118,22 @@ async function getCurrencyRates(): Promise<CurrencyRates | null> {
     const str = await fs.readFile(pathToData, { encoding: 'utf8' });
 
     // TODO Need to check date
+    // Need to arrange func to return data before writing
 
     return safelyParseJSON(str);
   } catch (err) {
     // Fetch data from API
     const data = await fetchCurrencyRates(getCurrencyRatesUrl());
+
     fs.mkdir(path.join(process.cwd(), './data/'))
       .then(() => {
-        fs.writeFile(pathToData, safelyStringifyJSON(data));
+        fs.writeFile(pathToData, safelyStringifyJSON(data))
+          .then(() => console.log('file created'))
+          .catch((err) => console.error('Error when write file', err));
       })
-      .catch((err) => console.log('Error when make dir', err));
+      .catch((err) => console.error('Error when make dir', err));
+
+    return data || null;
   }
 }
 
