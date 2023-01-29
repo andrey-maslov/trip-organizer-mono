@@ -12,7 +12,7 @@ class TripService {
       throw new Error('No id');
     }
     const trip: Trip = await TripSchema.findById(id).lean();
-    const summary = await getTripSummaryValues(trip);
+    const summary = await getTripSummaryValues(trip, 'EUR');
     return { ...trip, summary };
   }
 

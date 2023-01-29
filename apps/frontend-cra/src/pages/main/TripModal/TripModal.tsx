@@ -1,5 +1,5 @@
 import React from 'react';
-import * as dayjs from 'dayjs';
+import dayjs from 'dayjs';
 import { Form, Input, Modal, DatePicker, Row, Col } from 'antd';
 import { Trip } from '@/shared/models';
 import { FORM_GUTTER } from '@/shared/constants';

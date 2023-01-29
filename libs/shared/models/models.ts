@@ -66,6 +66,8 @@ export type CurrencyRates = {
   rates: Record<Exclude<CurrencyISOName, typeof userCurrency>, number>;
 };
 
+export type AllCurrencyRates = Record<CurrencyISOName, CurrencyRates>;
+
 export type TripSummaryValues = {
   totalTimeMs: number;
   totalTimeStr: string;

@@ -1,8 +1,8 @@
-import * as dayjs from 'dayjs';
-import * as duration from 'dayjs/plugin/duration';
-import * as isBetween from 'dayjs/plugin/isBetween';
-import * as relativeTime from 'dayjs/plugin/relativeTime';
-import * as isSameOrBefore from 'dayjs/plugin/isSameOrBefore';
+import dayjs from 'dayjs';
+import duration from 'dayjs/plugin/duration';
+import isBetween from 'dayjs/plugin/isBetween';
+import relativeTime from 'dayjs/plugin/relativeTime';
+import isSameOrBefore from 'dayjs/plugin/isSameOrBefore';
 
 dayjs.extend(duration);
 dayjs.extend(isBetween);
@@ -57,3 +57,11 @@ export const isTimeInFuture = (time: Time): boolean => {
   }
   return dayjs().isSameOrBefore(time, 'minute');
 };
+
+export const isDateExpired = (time: number, expirationDuration: number): boolean => {
+  if (!time || !expirationDuration) {
+    return true;
+  }
+  const currentTimestamp = Math.floor(Date.now() / 1000); // in seconds
+  return time + expirationDuration < currentTimestamp;
+}

@@ -68,3 +68,5 @@ export const defaultCurrencyRates: CurrencyRates = {
     BYN: 2.753763,
   },
 };
+
+export const SECONDS_IN_DAY = 86400;

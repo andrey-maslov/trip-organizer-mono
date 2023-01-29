@@ -10,7 +10,7 @@ import {
   Statistic,
 } from 'antd';
 import type { countdownValueType } from 'antd/es/statistic/utils';
-import * as dayjs from 'dayjs';
+import dayjs from 'dayjs';
 import { TripSections } from './TripSections/TripSections';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
 import { fetchOneTrip, updateTrip } from '../../api/apiTrips';

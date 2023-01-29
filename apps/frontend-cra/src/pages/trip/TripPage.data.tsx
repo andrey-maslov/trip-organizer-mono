@@ -1,5 +1,5 @@
 import React from 'react';
-import * as dayjs from 'dayjs';
+import dayjs from 'dayjs';
 import { ColumnsType } from 'antd/es/table';
 import { Button, Popconfirm, Tag, Typography } from 'antd';
 import {

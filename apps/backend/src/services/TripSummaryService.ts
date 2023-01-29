@@ -1,32 +1,45 @@
-import { CurrencyRates, Trip, TripSummaryValues } from '@/shared/models';
-import * as dayjs from 'dayjs';
-import * as duration from 'dayjs/plugin/duration';
+import {
+  AllCurrencyRates,
+  CurrencyISOName,
+  CurrencyRates,
+  Trip,
+  TripSummaryValues,
+} from '@/shared/models';
+import dayjs from 'dayjs';
+import duration from 'dayjs/plugin/duration';
 import {
   currencyISONameList,
+  DEFAULT_CURRENCY,
   defaultCurrencyRates,
-  userCurrency,
+  SECONDS_IN_DAY,
 } from '@/shared/constants';
-import {
-  getHumanizedTimeDuration,
-  round,
-  safelyStringifyJSON,
-} from '@/shared/utils';
+import { getHumanizedTimeDuration, isDateExpired, round } from '@/shared/utils';
 import { convertAmount, getSum, safelyParseJSON } from '@/shared/utils';
-import * as fs from 'node:fs/promises';
 import * as path from 'node:path';
 import axios from 'axios';
+import FileService from './FileService';
+import logger from './LoggerService';
 
 dayjs.extend(duration);
 
+const CURRENCY_DATA_FILE_NAME = 'currencyRates.json';
+const CURRENCY_DATA_FILE_PATH = path.join(
+  process.cwd(),
+  './data/',
+  CURRENCY_DATA_FILE_NAME
+);
+
 export const getTripSummaryValues = async (
-  trip: Trip
+  trip: Trip,
+  userCurrency: CurrencyISOName
 ): Promise<TripSummaryValues> => {
   const { sections, dateTimeStart, dateTimeEnd } = trip;
 
-  const currencyRates = (await getCurrencyRates()) || defaultCurrencyRates;
+  // Firstly get only necessary currency rates data with base currency chosen by user
+  const currencyRates =
+    (await getCurrencyRates(userCurrency)) || defaultCurrencyRates;
 
-  // console.log('PATH', path.resolve('static', 'currencyRates.json'))
-
+  // Init summary values
   let roadCost = 0;
   let stayCost = 0;
   const totalTimeMs = 0;
@@ -110,38 +123,53 @@ export const getTripSummaryValues = async (
   };
 };
 
-async function getCurrencyRates(): Promise<CurrencyRates | null> {
-  const fileName = 'currencyRates.json';
-  const pathToData = path.join(process.cwd(), './data/', fileName);
+async function getCurrencyRates(
+  userCurrency: CurrencyISOName
+): Promise<CurrencyRates | null> {
+  // Check - if we have valid data in file
+  const str = await FileService.readFile(CURRENCY_DATA_FILE_PATH);
 
-  try {
-    const str = await fs.readFile(pathToData, { encoding: 'utf8' });
-
-    // TODO Need to check date
-    // Need to arrange func to return data before writing
-
-    return safelyParseJSON(str);
-  } catch (err) {
+  if (needToUpdateCurrencyRates(safelyParseJSON(str))) {
     // Fetch data from API
-    const data = await fetchCurrencyRates(getCurrencyRatesUrl());
+    logger.info('Need to fetch currency rates');
+    const currencyRates = await fetchCurrencyRates(
+      getCurrencyRatesUrl(userCurrency)
+    );
 
-    fs.mkdir(path.join(process.cwd(), './data/'))
-      .then(() => {
-        fs.writeFile(pathToData, safelyStringifyJSON(data))
-          .then(() => console.log('file created'))
-          .catch((err) => console.error('Error when write file', err));
+    // Asynchronously Get data with all currencies as base to file(
+    Promise.all(
+      currencyISONameList
+        .filter((item) => item !== userCurrency)
+        .map((item) => fetchCurrencyRates(getCurrencyRatesUrl(item)))
+    )
+      .then((dataList) => {
+        const dataForSave = {};
+        // Add previously fetched result for avoid extra request
+        [...dataList, currencyRates].forEach(
+          (item) => (dataForSave[item.base] = item)
+        );
+
+        // Save all rates
+        FileService.saveFile('data', 'currencyRates.json', dataForSave);
       })
-      .catch((err) => console.error('Error when make dir', err));
+      .catch((err) => logger.error('Error all promises', err));
 
-    return data || null;
+    return currencyRates;
+  } else {
+    logger.info('No need to fetch currency rates');
+    const obj = safelyParseJSON<AllCurrencyRates>(str);
+    return obj[userCurrency];
   }
 }
 
-const getCurrencyRatesUrl = (currenciesList = currencyISONameList): string => {
+const getCurrencyRatesUrl = (
+  base: CurrencyISOName = 'EUR',
+  currenciesList = currencyISONameList
+): string => {
   const currenciesStr = currenciesList
-    .filter((curr) => curr !== userCurrency)
+    .filter((curr) => curr !== base)
     .join(',');
-  return `https://api.apilayer.com/exchangerates_data/latest?base=${userCurrency}&symbols=${currenciesStr}`;
+  return `https://api.apilayer.com/exchangerates_data/latest?base=${base}&symbols=${currenciesStr}`;
 };
 
 const fetchCurrencyRates = async (url: string): Promise<CurrencyRates> => {
@@ -157,6 +185,30 @@ const fetchCurrencyRates = async (url: string): Promise<CurrencyRates> => {
     const { data } = await axios.get(url, config);
     return data;
   } catch (err) {
-    console.log('Error when fetch currency rates: ', err.message);
+    logger.error('Error when fetch currency rates: ', err.message);
   }
+};
+
+/**
+ * Check time stamp in the object
+ * If it was updated more than passed period, we need to fetch data to update in file
+ * @param data
+ * @param expirationDuration time in seconds to update
+ */
+export const needToUpdateCurrencyRates = (
+  data: AllCurrencyRates,
+  expirationDuration = SECONDS_IN_DAY
+): boolean => {
+  if (!data) {
+    return true;
+  }
+
+  // Check data
+  const presentRatesDate = data?.[DEFAULT_CURRENCY]?.timestamp;
+
+  if (!presentRatesDate || typeof presentRatesDate !== 'number') {
+    return true;
+  }
+
+  return isDateExpired(presentRatesDate, expirationDuration);
 };
