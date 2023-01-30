@@ -19,16 +19,16 @@ server.put('/api/trips', tripController.update);
 server.delete('/api/trips/:id', tripController.delete);
 
 // Health check
-server.get('/api/health', async (req, res) =>
-  res.status(200).send('Works fine')
-);
+server.get('/api/health', async (req, res) => {
+  return res.status(200).send('Works fine');
+});
 server.get('/api/health/vars', async (req, res) =>
   res.status(200).send({
     port: PORT,
     env: process.env.NODE_ENV,
     dbUri,
     dbConnectionState: mongoose.connection.readyState,
-    path: path.join(process.cwd())
+    path: path.join(process.cwd()),
   })
 );
 

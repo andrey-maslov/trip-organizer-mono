@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useLocation } from 'react-router-dom';
 import {
   Button,
   Divider,
@@ -24,6 +24,7 @@ const { Countdown } = Statistic;
 
 export const TripPage: React.FC = (): JSX.Element => {
   const { id } = useParams();
+  const location = useLocation();
   const queryClient = useQueryClient();
 
   const [openTripModal, setOpenTripModal] = useState(false);
@@ -32,7 +33,9 @@ export const TripPage: React.FC = (): JSX.Element => {
     isLoading,
     error,
     data: trip,
-  } = useQuery<Trip, Error>(['trip', id], () => fetchOneTrip(id || ''));
+  } = useQuery<Trip, Error>(['trip', id, location.search], () =>
+    fetchOneTrip(id || '', location.search)
+  );
 
   const updateTripMutation = useMutation(updateTrip, {
     onSuccess: () => {

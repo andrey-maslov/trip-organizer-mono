@@ -80,4 +80,9 @@ export type TripSummaryValues = {
   totalCost: number;
   roadCost: number;
   stayCost: number;
+  currency: CurrencyISOName;
 };
+
+export type GetOneTripParams = {
+  currency: CurrencyISOName
+}

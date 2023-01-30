@@ -31,13 +31,14 @@ const CURRENCY_DATA_FILE_PATH = path.join(
 
 export const getTripSummaryValues = async (
   trip: Trip,
-  userCurrency: CurrencyISOName
+  userCurrency: CurrencyISOName = DEFAULT_CURRENCY
 ): Promise<TripSummaryValues> => {
   const { sections, dateTimeStart, dateTimeEnd } = trip;
 
   // Firstly get only necessary currency rates data with base currency chosen by user
+  const currency = userCurrency.toUpperCase() as CurrencyISOName;
   const currencyRates =
-    (await getCurrencyRates(userCurrency)) || defaultCurrencyRates;
+    (await getCurrencyRates(currency)) || defaultCurrencyRates;
 
   // Init summary values
   let roadCost = 0;
@@ -118,8 +119,9 @@ export const getTripSummaryValues = async (
       totalTripTime - roadTimeMs - stayTimeMs
     ),
     totalCost: round(roadCost + stayCost, 2),
-    roadCost,
-    stayCost,
+    roadCost: round(roadCost, 2),
+    stayCost: round(stayCost, 2),
+    currency,
   };
 };
 
@@ -163,7 +165,7 @@ async function getCurrencyRates(
 }
 
 const getCurrencyRatesUrl = (
-  base: CurrencyISOName = 'EUR',
+  base: CurrencyISOName = DEFAULT_CURRENCY,
   currenciesList = currencyISONameList
 ): string => {
   const currenciesStr = currenciesList

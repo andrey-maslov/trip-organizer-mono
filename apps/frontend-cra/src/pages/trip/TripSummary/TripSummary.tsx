@@ -1,7 +1,6 @@
 import React from 'react';
 import type { FC } from 'react';
 import styles from '../TripSections/trip-sections.module.scss';
-import { DEFAULT_CURRENCY } from '@/shared/constants';
 import { TripSummaryValues } from '@/shared/models';
 
 type TripSummaryProps = {
@@ -16,6 +15,7 @@ export const TripSummary: FC<TripSummaryProps> = ({ values }) => {
     totalCost,
     roadCost,
     stayCost,
+    currency,
   } = values;
 
   return (
@@ -23,19 +23,19 @@ export const TripSummary: FC<TripSummaryProps> = ({ values }) => {
       <li className={styles.totalValuesItem}>
         <span>Total price: </span>
         <span>
-          {totalCost} {DEFAULT_CURRENCY}
+          {totalCost} {currency}
         </span>
       </li>
       <li className={styles.totalValuesItem}>
         <span>Road price: </span>
         <span>
-          {roadCost} {DEFAULT_CURRENCY}
+          {roadCost} {currency}
         </span>
       </li>
       <li className={styles.totalValuesItem}>
         <span>Stay price: </span>
         <span>
-          {stayCost} {DEFAULT_CURRENCY}
+          {stayCost} {currency}
         </span>
       </li>
       <li className={styles.totalValuesItem}>

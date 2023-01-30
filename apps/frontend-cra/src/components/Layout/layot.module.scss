@@ -21,6 +21,19 @@ a.logo {
   }
 }
 
+.header {
+  display: flex;
+  justify-content: space-between;
+}
+
+.currencyChange {
+  padding: 0;
+  background-color: transparent;
+  border: 0;
+  color: white;
+  cursor: pointer;
+}
+
 .footer {
   background: rgba(#001529, 0.5) !important;
 }

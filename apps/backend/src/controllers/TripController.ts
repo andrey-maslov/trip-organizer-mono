@@ -12,7 +12,7 @@ class TripController {
 
   async getOne(req, res) {
     try {
-      const trip = await tripService.getOne(req.params.id);
+      const trip = await tripService.getOne(req.params.id, req.query);
       res.send(trip);
     } catch (e) {
       res.status(500).send(e);
