@@ -9,7 +9,7 @@ import {
   CheckboxOptionType,
 } from 'antd';
 import type { CheckboxValueType } from 'antd/es/checkbox/Group';
-import { getColumns } from '../TripPage.data';
+import { getColumns } from '../TripSectionsTableRender';
 import {
   TripSectionModal,
   TripSectionValues,
@@ -113,6 +113,7 @@ export const TripSections: FC<TripSectionsProps> = ({ trip }) => {
           </>
         )}
 
+        {/*Sections table*/}
         {Array.isArray(trip.sections) && trip.sections.length > 0 ? (
           <Table
             columns={columns}
@@ -129,6 +130,8 @@ export const TripSections: FC<TripSectionsProps> = ({ trip }) => {
             clicking a button "+"
           </div>
         )}
+        {/*End Sections table*/}
+
       </div>
 
       <div className={styles.buttons}>
