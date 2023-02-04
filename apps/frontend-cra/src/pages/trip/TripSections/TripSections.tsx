@@ -21,6 +21,7 @@ import { updateTrip } from '../../../api/apiTrips';
 import { sectionTypesList } from '@/shared/constants';
 import { TripSummary } from '../TripSummary/TripSummary';
 import { isNow } from '@/shared/utils';
+import { TripSectionsTable } from '../TripSectionsTable/TripSectionsTable';
 
 const { Title } = Typography;
 const CheckboxGroup = Checkbox.Group;
@@ -115,14 +116,19 @@ export const TripSections: FC<TripSectionsProps> = ({ trip }) => {
 
         {/*Sections table*/}
         {Array.isArray(trip.sections) && trip.sections.length > 0 ? (
-          <Table
-            columns={columns}
-            dataSource={data}
-            pagination={false}
-            className={styles.table}
-            rowClassName={({ dateTimeStart, dateTimeEnd }) => {
-              return isNow(dateTimeStart, dateTimeEnd) ? styles.current : '';
-            }}
+          // <Table
+          //   columns={columns}
+          //   dataSource={data}
+          //   pagination={false}
+          //   className={styles.table}
+          //   rowClassName={({ dateTimeStart, dateTimeEnd }) => {
+          //     return isNow(dateTimeStart, dateTimeEnd) ? styles.current : '';
+          //   }}
+          // />
+          <TripSectionsTable
+            data={trip.sections}
+            updateRow={onUpdateButtonClick}
+            deleteRow={onSectionRemove}
           />
         ) : (
           <div>
@@ -131,7 +137,6 @@ export const TripSections: FC<TripSectionsProps> = ({ trip }) => {
           </div>
         )}
         {/*End Sections table*/}
-
       </div>
 
       <div className={styles.buttons}>
