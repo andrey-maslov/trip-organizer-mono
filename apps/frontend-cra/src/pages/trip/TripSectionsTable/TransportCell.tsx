@@ -1,5 +1,5 @@
 import React from 'react';
-import styles from '../trip-page.module.scss';
+import styles from './trip-sections-table.module.scss';
 import { PlacementType, Section, TransportType } from '@/shared/models';
 import { FaBus, FaCarSide, FaHotel, FaQuestion, FaTrain } from 'react-icons/fa';
 import { ImAirplane } from 'react-icons/im';

@@ -2,14 +2,12 @@ import React, { useState, FC } from 'react';
 import {
   Button,
   Divider,
-  Table,
   Tooltip,
   Typography,
   Checkbox,
   CheckboxOptionType,
 } from 'antd';
 import type { CheckboxValueType } from 'antd/es/checkbox/Group';
-import { getColumns } from '../TripSectionsTableRender';
 import {
   TripSectionModal,
   TripSectionValues,
@@ -20,7 +18,6 @@ import { useMutation, useQueryClient } from 'react-query';
 import { updateTrip } from '../../../api/apiTrips';
 import { sectionTypesList } from '@/shared/constants';
 import { TripSummary } from '../TripSummary/TripSummary';
-import { isNow } from '@/shared/utils';
 import { TripSectionsTable } from '../TripSectionsTable/TripSectionsTable';
 
 const { Title } = Typography;
@@ -48,13 +45,7 @@ export const TripSections: FC<TripSectionsProps> = ({ trip }) => {
   // Prepare section to render: add index, filter, etc
   const data: Section[] =
     trip.sections && trip.sections.length > 0
-      ? trip.sections
-          .filter((section) => checkedList.includes(section.type))
-          .map((section, index) => ({
-            ...section,
-            index: ++index,
-            key: section._id,
-          }))
+      ? trip.sections.filter((section) => checkedList.includes(section.type))
       : [];
 
   const onSectionTypeChange = (list: CheckboxValueType[]) => {
@@ -96,9 +87,6 @@ export const TripSections: FC<TripSectionsProps> = ({ trip }) => {
     addSectionMutation.mutate({ ...trip, sections: newSections });
   };
 
-  // Get cells structure and render rules with passing 2 callbacks there as buttons click handlers
-  const columns = getColumns(onSectionRemove, onUpdateButtonClick);
-
   return (
     <>
       <div className={styles.tableWrapper}>
@@ -116,17 +104,8 @@ export const TripSections: FC<TripSectionsProps> = ({ trip }) => {
 
         {/*Sections table*/}
         {Array.isArray(trip.sections) && trip.sections.length > 0 ? (
-          // <Table
-          //   columns={columns}
-          //   dataSource={data}
-          //   pagination={false}
-          //   className={styles.table}
-          //   rowClassName={({ dateTimeStart, dateTimeEnd }) => {
-          //     return isNow(dateTimeStart, dateTimeEnd) ? styles.current : '';
-          //   }}
-          // />
           <TripSectionsTable
-            data={trip.sections}
+            data={data}
             updateRow={onUpdateButtonClick}
             deleteRow={onSectionRemove}
           />

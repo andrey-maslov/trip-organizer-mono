@@ -3,18 +3,10 @@
   overflow-x: scroll;
 }
 
-.table {
-  min-width: 1200px;
-  max-width: 1300px;
-
-  .current {
-    background-color: #00800024;
-
-    &:hover {
-      background-color: #00800024;
-    }
-  }
-}
+//.table {
+//  min-width: 1200px;
+//  max-width: 1300px;
+//}
 
 .filter {
   margin-bottom: 40px;

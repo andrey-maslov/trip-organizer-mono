@@ -9,16 +9,18 @@ import { SectionStatusCell } from './SectionStatusCell';
 import { PaymentsCell } from './PaymentsCell';
 import { PriceCell } from './PriceCell';
 import { ActionCell } from './ActionCell';
+import { isNow } from '@/shared/utils';
 
 const headers = [
   'Journey part name',
+  'Status',
   'Transport or placement',
   'Start Date',
   'Duration',
-  'Status',
   'Payments',
   'Price',
   'Notes',
+  'Action',
 ];
 
 export type TripSectionsTableProps = {
@@ -33,35 +35,61 @@ export const TripSectionsTable: React.FC<TripSectionsTableProps> = ({
   updateRow,
 }) => {
   return (
-    <div>
-      <div className={styles.header}>
+    <div className={styles.table}>
+      <div className={clsx(styles.row, styles.headerRow)}>
         {headers.map((item) => (
           <div key={item} className={clsx(styles.cell, styles.header)}>
             {item}
           </div>
         ))}
-        {data.map((section) => (
-          <div className={clsx(styles.row)}>
-            <h5>{section.name}</h5>
+      </div>
+      {data.map((section) => (
+        <div
+          key={section._id}
+          className={clsx(
+            styles.row,
+            isNow(section.dateTimeStart, section.dateTimeEnd)
+              ? styles.current
+              : ''
+          )}
+        >
+          <div className={clsx(styles.cell)}>
+            <h3>{section.name}</h3>
+          </div>
+          <div className={clsx(styles.cell)}>
+            <SectionStatusCell status={section.status} />
+          </div>
+          <div className={clsx(styles.cell)}>
             <TransportCell data={section} />
+          </div>
+          <div className={clsx(styles.cell)}>
             <StartTimeCell dateTimeStart={section.dateTimeStart} />
+          </div>
+          <div className={clsx(styles.cell)}>
             <DurationCell
               dateTimeStart={section.dateTimeStart}
               dateTimeEnd={section.dateTimeEnd}
             />
-            <SectionStatusCell status={section.status} />
-            {/*TODO maybe rename this item to documents. Need to think about payments in common*/}
+          </div>
+          {/*TODO maybe rename this item to documents. Need to think about payments in common*/}
+          <div className={clsx(styles.cell)}>
             <PaymentsCell payments={section.payments} />
+          </div>
+          <div className={clsx(styles.cell)}>
             <PriceCell payments={section.payments} />
-
+          </div>
+          <div className={clsx(styles.cell)}>
+            <div dangerouslySetInnerHTML={{ __html: section.notes }} />
+          </div>
+          <div className={clsx(styles.cell)}>
             <ActionCell
               deleteRow={deleteRow}
               updateRow={updateRow}
               sectionID={section._id}
             />
           </div>
-        ))}
-      </div>
+        </div>
+      ))}
     </div>
   );
 };
