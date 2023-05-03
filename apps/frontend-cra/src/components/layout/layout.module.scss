@@ -9,6 +9,17 @@
   padding-bottom: 40px;
   flex-grow: 1;
   flex-shrink: 0;
+  margin: auto;
+}
+
+.spinner {
+  display: flex;
+  flex-grow: 1;
+  flex-shrink: 0;
+  justify-content: center;
+  align-items: center;
+  padding-top: 40px;
+  padding-bottom: 40px;
 }
 
 a.logo {
@@ -36,4 +47,16 @@ a.logo {
 
 .footer {
   background: rgba(#001529, 0.5) !important;
+}
+
+@media (max-width: 1536px) {
+  .content {
+    width: 82%;
+  }
+}
+
+@media (max-width: 992px) {
+  .content {
+    width: 90%;
+  }
 }

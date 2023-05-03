@@ -1,15 +1,22 @@
 import React from 'react';
 import { Routes, Route } from 'react-router-dom';
-import { MainPage } from './pages/main/MainPage';
-import { TripPage } from './pages/trip/TripPage';
-import { HealthPage } from './pages/health/HealthPage';
+import { MainPage } from './components/pages/main/MainPage';
+import { TripPage } from './components/pages/trip/TripPage';
+import { HealthPage } from './components/pages/health/HealthPage';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { ReactQueryDevtools } from 'react-query/devtools';
-import { PageLayout } from './components/Layout/PageLayout';
+import { PageLayout } from './components/layout/PageLayout';
 import './assets/scss/main.scss';
 import 'antd/dist/reset.css';
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      refetchOnWindowFocus: false,
+      retry: 1,
+    },
+  },
+});
 
 export function App(): JSX.Element {
   return (

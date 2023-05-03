@@ -15,7 +15,7 @@ import {
 import { Section, Trip } from '@/shared/models';
 import styles from './trip-sections.module.scss';
 import { useMutation, useQueryClient } from 'react-query';
-import { updateTrip } from '../../../api/apiTrips';
+import { updateTrip } from '../../../../api/apiTrips';
 import { sectionTypesList } from '@/shared/constants';
 import { TripSummary } from '../TripSummary/TripSummary';
 import { TripSectionsTable } from '../TripSectionsTable/TripSectionsTable';

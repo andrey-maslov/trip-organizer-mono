@@ -7,17 +7,19 @@ import {
   Typography,
   Row,
   Col,
-  Statistic,
+  Statistic, Result,
 } from 'antd';
 import type { countdownValueType } from 'antd/es/statistic/utils';
 import dayjs from 'dayjs';
 import { TripSections } from './TripSections/TripSections';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
-import { fetchOneTrip, updateTrip } from '../../api/apiTrips';
+import { fetchOneTrip, updateTrip } from '../../../api/apiTrips';
 import { Section, Trip } from '@/shared/models';
 import { getHumanizedTimeDuration, isTimeInFuture } from '@/shared/utils';
 import { TripModal } from '../main/TripModal/TripModal';
 import styles from './trip-page.module.scss';
+import {Loader} from "../../shared/loader/Loader";
+import {AxiosError} from "axios";
 
 const { Title, Paragraph } = Typography;
 const { Countdown } = Statistic;
@@ -33,7 +35,7 @@ export const TripPage: React.FC = (): JSX.Element => {
     isLoading,
     error,
     data: trip,
-  } = useQuery<Trip, Error>(['trip', id, location.search], () =>
+  } = useQuery<Trip, AxiosError>(['trip', id, location.search], () =>
     fetchOneTrip(id || '', location.search)
   );
 
@@ -45,11 +47,17 @@ export const TripPage: React.FC = (): JSX.Element => {
   });
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return <Loader />;
   }
 
   if (error) {
-    return <div>{error?.message || 'Server error'}</div>;
+    return (
+      <Result
+        status={Number(error.response?.status) >= 500 ? '500' : '404'}
+        title={error.response?.status ?? '500'}
+        subTitle={error.message ?? 'Sorry, something went wrong.'}
+      />
+    );
   }
 
   if (!trip) {

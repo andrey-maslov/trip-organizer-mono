@@ -78,7 +78,7 @@ export const TripSectionsTable: React.FC<TripSectionsTableProps> = ({
           <div className={clsx(styles.cell)}>
             <PriceCell payments={section.payments} />
           </div>
-          <div className={clsx(styles.cell)}>
+          <div className={clsx(styles.cell, 'text-ellipsis')}>
             <div dangerouslySetInnerHTML={{ __html: section.notes }} />
           </div>
           <div className={clsx(styles.cell)}>

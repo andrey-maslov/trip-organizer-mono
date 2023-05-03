@@ -1,5 +1,5 @@
 import React from 'react';
-import { checkAPIHealth, checkAPIVars } from '../../api/apiTrips';
+import { checkAPIHealth, checkAPIVars } from '../../../api/apiTrips';
 
 export const HealthPage: React.FC = (): JSX.Element => {
   return (

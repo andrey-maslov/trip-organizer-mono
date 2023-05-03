@@ -1,5 +1,5 @@
 const apiPathProd = 'https://trip-organizer-api.up.railway.app';
-const apiPathDev = '';
+const apiPathDev = 'http://localhost:3333';
 
 const isDev = process.env.NODE_ENV === 'development';
 
