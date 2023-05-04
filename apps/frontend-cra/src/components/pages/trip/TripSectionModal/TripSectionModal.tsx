@@ -62,6 +62,7 @@ export type TripSectionModalProps = {
   initialData?: Section;
   onCreate: (values: Section) => void;
   onCancel: () => void;
+  loading?: boolean;
 };
 
 export const TripSectionModal: React.FC<TripSectionModalProps> = ({
@@ -69,6 +70,7 @@ export const TripSectionModal: React.FC<TripSectionModalProps> = ({
   initialData,
   onCreate,
   onCancel,
+  loading = false
 }) => {
   const [sectionType, setSectionType] = useState(
     initialData?.type || DEFAULT_SECTION_TYPE
@@ -88,8 +90,6 @@ export const TripSectionModal: React.FC<TripSectionModalProps> = ({
     form
       .validateFields()
       .then((values: TripSectionValues) => {
-        form.resetFields();
-
         const rangeTimeValue: RangeTime | undefined = values?.rangeTime;
 
         // stringified view: 2022-11-29T16:32:33.043Z;
@@ -132,6 +132,7 @@ export const TripSectionModal: React.FC<TripSectionModalProps> = ({
       cancelText="Cancel"
       onCancel={onCancel}
       onOk={onSetSectionData}
+      confirmLoading={loading}
     >
       <Form
         form={form}

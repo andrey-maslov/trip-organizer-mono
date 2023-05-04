@@ -7,7 +7,8 @@ import {
   Typography,
   Row,
   Col,
-  Statistic, Result,
+  Statistic,
+  Result,
 } from 'antd';
 import type { countdownValueType } from 'antd/es/statistic/utils';
 import dayjs from 'dayjs';
@@ -18,8 +19,8 @@ import { Section, Trip } from '@/shared/models';
 import { getHumanizedTimeDuration, isTimeInFuture } from '@/shared/utils';
 import { TripModal } from '../main/TripModal/TripModal';
 import styles from './trip-page.module.scss';
-import {Loader} from "../../shared/loader/Loader";
-import {AxiosError} from "axios";
+import { Loader } from '../../shared/loader/Loader';
+import { AxiosError } from 'axios';
 
 const { Title, Paragraph } = Typography;
 const { Countdown } = Statistic;
@@ -39,6 +40,7 @@ export const TripPage: React.FC = (): JSX.Element => {
     fetchOneTrip(id || '', location.search)
   );
 
+  // Update journey
   const updateTripMutation = useMutation(updateTrip, {
     onSuccess: () => {
       setOpenTripModal(false);
@@ -66,58 +68,16 @@ export const TripPage: React.FC = (): JSX.Element => {
 
   const { name, dateTimeStart, dateTimeEnd, description } = trip;
 
-  const getClosesSectionStart = (
-    sections: Section[]
-  ): { sectionName: string; countdownValue: countdownValueType } | null => {
-    if (!sections || !Array.isArray(sections) || sections.length === 0) {
-      return null;
-    }
-
-    let sectionName = '';
-    let countdownValue: number | string = 0;
-
-    try {
-      for (let i = 0; i < sections.length; i++) {
-        if (
-          sections[i].dateTimeStart &&
-          isTimeInFuture(sections[i].dateTimeStart)
-        ) {
-          sectionName = sections[i].name || '';
-          countdownValue = sections[i].dateTimeStart || 0;
-          break;
-        }
-      }
-      return {
-        sectionName,
-        countdownValue,
-      };
-    } catch (e) {
-      return {
-        sectionName,
-        countdownValue,
-      };
-    }
-  };
-
   return (
     <Row justify="center">
       <Col span={23}>
         <Title>{name}</Title>
         <Paragraph>{description}</Paragraph>
         <Paragraph className={styles.date}>
-          From{' '}
-          <strong>
-            {dayjs(dateTimeStart).isValid()
-              ? dayjs(dateTimeStart).format('DD MMM YYYY')
-              : '...'}
-          </strong>{' '}
-          to{' '}
-          <strong>
-            {dayjs(dateTimeEnd).isValid()
-              ? dayjs(dateTimeEnd).format('DD MMM YYYY')
-              : '...'}{' '}
-          </strong>
-          <span>({getHumanizedTimeDuration(dateTimeStart, dateTimeEnd)})</span>
+          From <strong>{getFormattedData(dateTimeStart)}</strong> to{' '}
+          <strong>{getFormattedData(dateTimeEnd)}</strong>
+          {' => '}
+          <span>{getHumanizedTimeDuration(dateTimeStart, dateTimeEnd)}</span>
         </Paragraph>
         <Tooltip title="Edit journey">
           <Button
@@ -134,6 +94,7 @@ export const TripPage: React.FC = (): JSX.Element => {
           <Countdown
             title={getClosesSectionStart(trip.sections)?.sectionName}
             value={getClosesSectionStart(trip.sections)?.countdownValue}
+            format="DD d  HH h  mm"
           />
         )}
         <Divider />
@@ -148,9 +109,47 @@ export const TripPage: React.FC = (): JSX.Element => {
             onCancel={() => {
               setOpenTripModal(false);
             }}
+            loading={updateTripMutation.isLoading}
           />
         ) : null}
       </Col>
     </Row>
   );
+};
+
+function getFormattedData(date: string | null, format = 'DD MMM YYYY'): string {
+  return dayjs(date).isValid() ? dayjs(date).format(format) : '...';
+}
+
+const getClosesSectionStart = (
+  sections: Section[]
+): { sectionName: string; countdownValue: countdownValueType } | null => {
+  if (!sections || !Array.isArray(sections) || sections.length === 0) {
+    return null;
+  }
+
+  let sectionName = '';
+  let countdownValue: number | string = 0;
+
+  try {
+    for (let i = 0; i < sections.length; i++) {
+      if (
+        sections[i].dateTimeStart &&
+        isTimeInFuture(sections[i].dateTimeStart)
+      ) {
+        sectionName = sections[i].name || '';
+        countdownValue = sections[i].dateTimeStart || 0;
+        break;
+      }
+    }
+    return {
+      sectionName,
+      countdownValue,
+    };
+  } catch (e) {
+    return {
+      sectionName,
+      countdownValue,
+    };
+  }
 };

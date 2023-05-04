@@ -1,18 +1,18 @@
 @import '../../../../assets/scss/vars';
 
 $nameCellWidth: 200px;
-$transportCellWidth: 160px;
-$startTimeCellWidth: 100px;
-$durationCellWidth: 110px;
 $statusCellWidth: 110px;
+$transportCellWidth: 140px;
+$startTimeCellWidth: 110px;
+$durationCellWidth: 100px;
 $paymentsCellWidth: 130px;
-$priceCellWidth: 100px;
+$priceCellWidth: 70px;
 $notesCellWidth: 220px;
 $actionCellWidth: 110px;
 
 $tableWidth: $nameCellWidth + $transportCellWidth + $startTimeCellWidth +
   $durationCellWidth + $statusCellWidth + $paymentsCellWidth + $priceCellWidth +
-  $notesCellWidth + $actionCellWidth + 50px;
+  $notesCellWidth + $actionCellWidth;
 
 .table {
   max-width: $tableWidth;
@@ -39,13 +39,22 @@ $tableWidth: $nameCellWidth + $transportCellWidth + $startTimeCellWidth +
     .cell {
       border-right: 1px solid rgba(0, 0, 0, 0.2);
       text-align: center;
+
+      &:last-of-type {
+        border-right: 0;
+      }
     }
   }
 
   .cell {
     padding: 0 10px;
     flex-grow: 1;
+    border-right: 1px solid rgba(0, 0, 0, 0.2);
     //flex-shrink: 0;
+
+    &:last-of-type {
+      border-right: 0;
+    }
 
     &:nth-child(1) {
       max-width: $nameCellWidth;
@@ -55,13 +64,13 @@ $tableWidth: $nameCellWidth + $transportCellWidth + $startTimeCellWidth +
       text-align: center;
     }
     &:nth-child(3) {
-      max-width: $startTimeCellWidth;
+      max-width: $transportCellWidth;
     }
     &:nth-child(4) {
-      max-width: $durationCellWidth;
+      max-width: $startTimeCellWidth;
     }
     &:nth-child(5) {
-      max-width: $transportCellWidth;
+      max-width: $durationCellWidth;
     }
     &:nth-child(6) {
       max-width: $paymentsCellWidth;
@@ -99,11 +108,25 @@ $tableWidth: $nameCellWidth + $transportCellWidth + $startTimeCellWidth +
 }
 
 .actions {
-  button {
-    padding: 4px 8px;
+  display: flex;
+  flex-wrap: wrap;
 
-    &:first-of-type {
-      margin-right: 10px;
+  button {
+    padding: 2px 5px;
+    width: 50%;
+    color: grey;
+
+    &:nth-child(1) {
+      border-radius: 6px 0 0 0;
+    }
+    &:nth-child(2) {
+      border-radius: 0 6px 0 0;
+    }
+    &:nth-child(3) {
+      border-radius: 0 0 0 6px;
+    }
+    &:nth-child(4) {
+      border-radius: 0 0 6px 0;
     }
   }
 }

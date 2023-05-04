@@ -1,55 +1,42 @@
 import React from 'react';
 import styles from './trip-sections-table.module.scss';
-import { Button, Popconfirm, Popover } from 'antd';
+import { Button, Popconfirm } from 'antd';
 import { FaRegEdit, FaTrashAlt } from 'react-icons/fa';
-import { FiMoreVertical, FiPlus, FiArrowUp, FiArrowDown } from 'react-icons/fi';
+import { FiArrowUp, FiArrowDown } from 'react-icons/fi';
+
+export type Action = 'edit' | 'delete' | 'moveUp' | 'moveDown';
 
 type ActionCellProps = {
   sectionID: string;
-  deleteRow: (id: string) => void;
-  updateRow: (id: string) => void;
+  onAction: (id: string, actionType: Action) => void;
 };
 
 export const ActionCell: React.FC<ActionCellProps> = ({
   sectionID,
-  deleteRow,
-  updateRow,
+  onAction,
 }) => {
-  const content = (
+  return (
     <div className={styles.actions}>
-      <Button danger onClick={() => updateRow(sectionID)}>
+      <Button onClick={() => onAction(sectionID, 'moveUp')}>
+        <FiArrowUp />
+      </Button>
+
+      <Button onClick={() => onAction(sectionID, 'edit')}>
         <FaRegEdit />
       </Button>
 
-      <Button onClick={() => console.log('Add row')}>
-        <FiPlus />
+      <Button onClick={() => onAction(sectionID, 'moveDown')}>
+        <FiArrowDown />
       </Button>
 
       <Popconfirm
         title="Sure to delete?"
-        onConfirm={() => deleteRow(sectionID)}
+        onConfirm={() => onAction(sectionID, 'delete')}
       >
-        <Button danger>
+        <Button>
           <FaTrashAlt />
         </Button>
       </Popconfirm>
-
-      <div className={styles.position}>
-        <Button onClick={() => console.log('Up')}>
-          <FiArrowUp />
-        </Button>
-        <Button onClick={() => console.log('Down')}>
-          <FiArrowDown />
-        </Button>
-      </div>
     </div>
-  );
-
-  return (
-    <Popover placement="right" trigger="click" content={content}>
-      <button className={styles.btnMore}>
-        <FiMoreVertical />
-      </button>
-    </Popover>
   );
 };

@@ -19,6 +19,7 @@ import { updateTrip } from '../../../../api/apiTrips';
 import { sectionTypesList } from '@/shared/constants';
 import { TripSummary } from '../TripSummary/TripSummary';
 import { TripSectionsTable } from '../TripSectionsTable/TripSectionsTable';
+import { Action } from "../TripSectionsTable/ActionCell";
 
 const { Title } = Typography;
 const CheckboxGroup = Checkbox.Group;
@@ -62,16 +63,6 @@ export const TripSections: FC<TripSectionsProps> = ({ trip }) => {
     },
   });
 
-  const onSectionRemove = (id: string) => {
-    const newSections = trip.sections.filter((section) => section._id !== id);
-    addSectionMutation.mutate({ ...trip, sections: newSections });
-  };
-
-  const onUpdateButtonClick = (id: string) => {
-    setCurrentSectionId(id);
-    setOpen(true);
-  };
-
   const onSectionCreateOrUpdate = (values: TripSectionValues) => {
     let newSections: Section[];
 
@@ -86,6 +77,25 @@ export const TripSections: FC<TripSectionsProps> = ({ trip }) => {
     }
     addSectionMutation.mutate({ ...trip, sections: newSections });
   };
+
+  const onSectionAction = (id: string, actionType: Action) => {
+    if (actionType === 'edit') {
+      setCurrentSectionId(id);
+      setOpen(true);
+    }
+
+    if (actionType === 'delete') {
+      const newSections = trip.sections.filter((section) => section._id !== id);
+      addSectionMutation.mutate({ ...trip, sections: newSections });
+    }
+
+    if (actionType === 'moveUp' || actionType === "moveDown") {
+      const sectionIndex = trip.sections.findIndex(({ _id }) => _id === id)
+      const newSections = swapElements<Section>(trip.sections, sectionIndex, actionType);
+
+      addSectionMutation.mutate({ ...trip, sections: newSections });
+    }
+  }
 
   return (
     <>
@@ -106,8 +116,7 @@ export const TripSections: FC<TripSectionsProps> = ({ trip }) => {
         {Array.isArray(trip.sections) && trip.sections.length > 0 ? (
           <TripSectionsTable
             data={data}
-            updateRow={onUpdateButtonClick}
-            deleteRow={onSectionRemove}
+            onAction={onSectionAction}
           />
         ) : (
           <div>
@@ -144,6 +153,7 @@ export const TripSections: FC<TripSectionsProps> = ({ trip }) => {
             onCancel={() => {
               setOpen(false);
             }}
+            loading={addSectionMutation.isLoading}
           />
         )}
       </div>
@@ -156,4 +166,23 @@ export const TripSections: FC<TripSectionsProps> = ({ trip }) => {
       )}
     </>
   );
+};
+
+const swapElements = <T,>(array: T[], index: number, swapType: 'moveUp' | 'moveDown'): T[] => {
+
+  if (index === 0 && swapType === 'moveUp') {
+    return array;
+  }
+
+  if (index === array.length - 1 && swapType === 'moveDown') {
+    return array;
+  }
+  const tempCurrElem = array[index];
+
+  const index2 = swapType === 'moveDown' ? index + 1 : index - 1
+
+  array[index] = array[index2];
+  array[index2] = tempCurrElem;
+
+  return array
 };

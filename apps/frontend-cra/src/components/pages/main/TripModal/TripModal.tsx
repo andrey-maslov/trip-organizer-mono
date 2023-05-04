@@ -14,6 +14,7 @@ export type TripModalProps = {
   onCreate: (values: TripValues) => void;
   onUpdate: (values: TripValues) => void;
   onCancel: () => void;
+  loading?: boolean;
 };
 
 export const TripModal: React.FC<TripModalProps> = ({
@@ -22,6 +23,7 @@ export const TripModal: React.FC<TripModalProps> = ({
   onCreate,
   onUpdate,
   onCancel,
+  loading = false,
 }) => {
   const [form] = Form.useForm();
 
@@ -29,14 +31,12 @@ export const TripModal: React.FC<TripModalProps> = ({
     form
       .validateFields()
       .then((values: TripValues) => {
-        form.resetFields();
 
         const start = values.dateTimeStart
           ? values.dateTimeStart.toString()
           : null;
         const end = values.dateTimeEnd ? values.dateTimeEnd.toString() : null;
 
-        // console.log(dateStart)
         const dataToSave = { ...values, dateStart: start, dateEnd: end };
 
         if (initialData?._id) {
@@ -64,6 +64,7 @@ export const TripModal: React.FC<TripModalProps> = ({
       cancelText="Cancel"
       onCancel={onCancel}
       onOk={onSetTripData}
+      confirmLoading={loading}
     >
       <Form
         form={form}

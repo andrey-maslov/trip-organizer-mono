@@ -1,5 +1,5 @@
 import React from 'react';
-import { Section, Status } from '@/shared/models';
+import { Section } from '@/shared/models';
 import styles from './trip-sections-table.module.scss';
 import { clsx } from 'clsx';
 import { TransportCell } from './TransportCell';
@@ -8,7 +8,7 @@ import { DurationCell } from './DurationCell';
 import { SectionStatusCell } from './SectionStatusCell';
 import { PaymentsCell } from './PaymentsCell';
 import { PriceCell } from './PriceCell';
-import { ActionCell } from './ActionCell';
+import { Action, ActionCell } from './ActionCell';
 import { isNow } from '@/shared/utils';
 
 const headers = [
@@ -25,14 +25,12 @@ const headers = [
 
 export type TripSectionsTableProps = {
   data: Section[];
-  deleteRow: (id: string) => void;
-  updateRow: (id: string) => void;
+  onAction: (id: string, actionType: Action) => void;
 };
 
 export const TripSectionsTable: React.FC<TripSectionsTableProps> = ({
   data,
-  deleteRow,
-  updateRow,
+  onAction,
 }) => {
   return (
     <div className={styles.table}>
@@ -83,8 +81,7 @@ export const TripSectionsTable: React.FC<TripSectionsTableProps> = ({
           </div>
           <div className={clsx(styles.cell)}>
             <ActionCell
-              deleteRow={deleteRow}
-              updateRow={updateRow}
+              onAction={onAction}
               sectionID={section._id}
             />
           </div>

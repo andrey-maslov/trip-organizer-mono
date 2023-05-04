@@ -20,7 +20,6 @@ class TripController {
   }
 
   async getAll(req, res) {
-    console.log('TRIPS')
     try {
       const trips = await tripService.getAll();
       return res.send(trips);

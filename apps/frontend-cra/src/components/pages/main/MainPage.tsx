@@ -7,11 +7,7 @@ import {
   Row,
   Tooltip,
   Typography,
-  Avatar,
   Card,
-  Skeleton,
-  Space,
-  Divider,
 } from 'antd';
 import { NavLink } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from 'react-query';
@@ -22,10 +18,8 @@ import {
   updateTrip,
 } from '../../../api/apiTrips';
 import { TripModal } from './TripModal/TripModal';
-import styles from './main.module.scss';
 import { FaTrashAlt, FaRegEdit } from 'react-icons/fa';
 import { Trip } from '@/shared/models';
-import { Loader } from '../../shared/loader/Loader';
 import { AxiosError } from 'axios';
 
 const { Meta } = Card;
@@ -110,7 +104,9 @@ export const MainPage: React.FC = (): JSX.Element => {
                         title="Sure to delete?"
                         onConfirm={() => removeTripMutation.mutate(_id)}
                       >
-                        <div><FaTrashAlt /></div>
+                        <div>
+                          <FaTrashAlt />
+                        </div>
                       </Popconfirm>,
                     ]}
                   >
@@ -149,6 +145,7 @@ export const MainPage: React.FC = (): JSX.Element => {
           onCancel={() => {
             setOpen(false);
           }}
+          loading={createTripMutation.isLoading || updateTripMutation.isLoading}
         />
       ) : null}
     </>

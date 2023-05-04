@@ -9,7 +9,7 @@ export const StartTimeCell: React.FC<StartTimeCellProps> = ({
 }) => {
   return (
     <div>
-      {dayjs(start).isValid() ? dayjs(start).format('DD MMM YY HH:mm') : '-'}
+      {dayjs(start).isValid() ? dayjs(start).format('DD MMM YYYY HH:mm') : '-'}
     </div>
   );
 };
