@@ -70,7 +70,7 @@ export const TripSectionModal: React.FC<TripSectionModalProps> = ({
   initialData,
   onCreate,
   onCancel,
-  loading = false
+  loading = false,
 }) => {
   const [sectionType, setSectionType] = useState(
     initialData?.type || DEFAULT_SECTION_TYPE
