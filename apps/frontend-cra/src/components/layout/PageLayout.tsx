@@ -20,7 +20,13 @@ export const PageLayout: React.FC<PageLayoutProps> = ({
     <Layout className={styles.layout}>
       <PageHeader />
       <Content className={styles.content}>
-        {loading ? <div className={styles.spinner}><Spin /></div> : <div>{children}</div>}
+        {loading ? (
+          <div className={styles.spinner}>
+            <Spin />
+          </div>
+        ) : (
+          <div>{children}</div>
+        )}
       </Content>
       <PageFooter />
     </Layout>

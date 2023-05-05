@@ -19,7 +19,7 @@ import { updateTrip } from '../../../../api/apiTrips';
 import { sectionTypesList } from '@/shared/constants';
 import { TripSummary } from '../TripSummary/TripSummary';
 import { TripSectionsTable } from '../TripSectionsTable/TripSectionsTable';
-import { Action } from "../TripSectionsTable/ActionCell";
+import { Action } from '../TripSectionsTable/ActionCell';
 
 const { Title } = Typography;
 const CheckboxGroup = Checkbox.Group;
@@ -89,13 +89,17 @@ export const TripSections: FC<TripSectionsProps> = ({ trip }) => {
       addSectionMutation.mutate({ ...trip, sections: newSections });
     }
 
-    if (actionType === 'moveUp' || actionType === "moveDown") {
-      const sectionIndex = trip.sections.findIndex(({ _id }) => _id === id)
-      const newSections = swapElements<Section>(trip.sections, sectionIndex, actionType);
+    if (actionType === 'moveUp' || actionType === 'moveDown') {
+      const sectionIndex = trip.sections.findIndex(({ _id }) => _id === id);
+      const newSections = swapElements<Section>(
+        trip.sections,
+        sectionIndex,
+        actionType
+      );
 
       addSectionMutation.mutate({ ...trip, sections: newSections });
     }
-  }
+  };
 
   return (
     <>
@@ -114,10 +118,7 @@ export const TripSections: FC<TripSectionsProps> = ({ trip }) => {
 
         {/*Sections table*/}
         {Array.isArray(trip.sections) && trip.sections.length > 0 ? (
-          <TripSectionsTable
-            data={data}
-            onAction={onSectionAction}
-          />
+          <TripSectionsTable data={data} onAction={onSectionAction} />
         ) : (
           <div>
             You have no details of your journey yet. Add the first trip section
@@ -168,8 +169,11 @@ export const TripSections: FC<TripSectionsProps> = ({ trip }) => {
   );
 };
 
-const swapElements = <T,>(array: T[], index: number, swapType: 'moveUp' | 'moveDown'): T[] => {
-
+const swapElements = <T,>(
+  array: T[],
+  index: number,
+  swapType: 'moveUp' | 'moveDown'
+): T[] => {
   if (index === 0 && swapType === 'moveUp') {
     return array;
   }
@@ -179,10 +183,10 @@ const swapElements = <T,>(array: T[], index: number, swapType: 'moveUp' | 'moveD
   }
   const tempCurrElem = array[index];
 
-  const index2 = swapType === 'moveDown' ? index + 1 : index - 1
+  const index2 = swapType === 'moveDown' ? index + 1 : index - 1;
 
   array[index] = array[index2];
   array[index2] = tempCurrElem;
 
-  return array
+  return array;
 };

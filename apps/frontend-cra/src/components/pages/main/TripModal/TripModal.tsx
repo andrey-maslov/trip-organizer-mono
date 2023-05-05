@@ -31,7 +31,6 @@ export const TripModal: React.FC<TripModalProps> = ({
     form
       .validateFields()
       .then((values: TripValues) => {
-
         const start = values.dateTimeStart
           ? values.dateTimeStart.toString()
           : null;

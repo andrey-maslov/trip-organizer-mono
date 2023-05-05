@@ -80,10 +80,7 @@ export const TripSectionsTable: React.FC<TripSectionsTableProps> = ({
             <div dangerouslySetInnerHTML={{ __html: section.notes }} />
           </div>
           <div className={clsx(styles.cell)}>
-            <ActionCell
-              onAction={onAction}
-              sectionID={section._id}
-            />
+            <ActionCell onAction={onAction} sectionID={section._id} />
           </div>
         </div>
       ))}
