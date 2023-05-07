@@ -20,6 +20,8 @@ import { sectionTypesList } from '@/shared/constants';
 import { TripSummary } from '../TripSummary/TripSummary';
 import { TripSectionsTable } from '../TripSectionsTable/TripSectionsTable';
 import { Action } from '../TripSectionsTable/ActionCell';
+import { TripSectionsList } from '../TripSectionsList/TripSectionsList';
+import { prepareSections, swapElements } from "../../../../utils/utils";
 
 const { Title } = Typography;
 const CheckboxGroup = Checkbox.Group;
@@ -44,10 +46,7 @@ export const TripSections: FC<TripSectionsProps> = ({ trip }) => {
     useState<CheckboxValueType[]>(defaultCheckedList);
 
   // Prepare section to render: add index, filter, etc
-  const data: Section[] =
-    trip.sections && trip.sections.length > 0
-      ? trip.sections.filter((section) => checkedList.includes(section.type))
-      : [];
+  const data: Section[] = prepareSections(trip, checkedList);
 
   const onSectionTypeChange = (list: CheckboxValueType[]) => {
     if (list.length === 0) {
@@ -116,16 +115,14 @@ export const TripSections: FC<TripSectionsProps> = ({ trip }) => {
           </>
         )}
 
-        {/*Sections table*/}
         {Array.isArray(trip.sections) && trip.sections.length > 0 ? (
-          <TripSectionsTable data={data} onAction={onSectionAction} />
+          <TripSectionsList data={data} onAction={onSectionAction} />
         ) : (
           <div>
             You have no details of your journey yet. Add the first trip section
             clicking a button "+"
           </div>
         )}
-        {/*End Sections table*/}
       </div>
 
       <div className={styles.buttons}>
@@ -167,26 +164,4 @@ export const TripSections: FC<TripSectionsProps> = ({ trip }) => {
       )}
     </>
   );
-};
-
-const swapElements = <T,>(
-  array: T[],
-  index: number,
-  swapType: 'moveUp' | 'moveDown'
-): T[] => {
-  if (index === 0 && swapType === 'moveUp') {
-    return array;
-  }
-
-  if (index === array.length - 1 && swapType === 'moveDown') {
-    return array;
-  }
-  const tempCurrElem = array[index];
-
-  const index2 = swapType === 'moveDown' ? index + 1 : index - 1;
-
-  array[index] = array[index2];
-  array[index2] = tempCurrElem;
-
-  return array;
 };

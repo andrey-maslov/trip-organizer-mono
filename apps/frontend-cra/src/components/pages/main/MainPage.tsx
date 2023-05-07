@@ -8,6 +8,7 @@ import {
   Tooltip,
   Typography,
   Card,
+  Empty,
 } from 'antd';
 import { NavLink } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from 'react-query';
@@ -69,10 +70,25 @@ export const MainPage: React.FC = (): JSX.Element => {
 
   if (!isLoading && !error && !trips) {
     return (
-      <div>
-        <div>You have no trips</div>
-        <div>Add the first</div>
-      </div>
+      <Empty
+        image="https://gw.alipayobjects.com/zos/antfincdn/ZHrcdLPrvN/empty.svg"
+        imageStyle={{ height: 60 }}
+        description={
+          <div>
+            <div>You have no trips</div>
+          </div>
+        }
+      >
+        <Button
+          type="primary"
+          onClick={() => {
+            setCurrentTripId('');
+            setOpen(true);
+          }}
+        >
+          Create first Now
+        </Button>
+      </Empty>
     );
   }
 

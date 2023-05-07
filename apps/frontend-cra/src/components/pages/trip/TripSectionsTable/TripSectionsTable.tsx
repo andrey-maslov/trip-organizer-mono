@@ -10,6 +10,7 @@ import { PaymentsCell } from './PaymentsCell';
 import { PriceCell } from './PriceCell';
 import { Action, ActionCell } from './ActionCell';
 import { isNow } from '@/shared/utils';
+import { StayingCell } from "./StayingCell";
 
 const headers = [
   'Journey part name',
@@ -58,7 +59,8 @@ export const TripSectionsTable: React.FC<TripSectionsTableProps> = ({
             <SectionStatusCell status={section.status} />
           </div>
           <div className={clsx(styles.cell)}>
-            <TransportCell data={section} />
+            {section.type === 'road' && <TransportCell data={section} />}
+            {section.type === 'stay' && <StayingCell data={section} />}
           </div>
           <div className={clsx(styles.cell)}>
             <StartTimeCell dateTimeStart={section.dateTimeStart} />

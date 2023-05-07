@@ -1,0 +1,88 @@
+@import '../../../../assets/scss/vars';
+
+.list {
+
+  & > div {
+    margin-bottom: 10px;
+  }
+}
+
+.item {
+  box-shadow: 0 1px 2px rgba(0,0,0,.2);
+  border-radius: 5px;
+  border: 1px solid rgba(0,0,0,.1);
+
+  &.current {
+    background-color: #00800024;
+  }
+}
+
+.title {
+  display: flex;
+  flex-wrap: wrap;
+  position: relative;
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+.typeIcon {
+  position: absolute;
+  font-size: 20px;
+  left: 0;
+  opacity: .7;
+}
+
+.name {
+  flex-grow: 1;
+  max-width: 260px;
+  min-width: 260px;
+}
+
+.time {
+  font-weight: normal;
+
+  span {
+    text-decoration: underline;
+
+    svg {
+      margin: 0 10px;
+      position: relative;
+      bottom: -3px
+    }
+  }
+}
+
+.moreBtn {
+  position: absolute;
+  right: 0;
+  top:0;
+  font-size: 20px;
+
+  svg {
+    position: relative;
+    top: -3px
+  }
+}
+
+@media only screen and (max-width: $md-breakpoint) {
+
+  .item {
+    &.hidden {
+      .desc {
+        display: none;
+      }
+    }
+  }
+
+  .name {
+    max-width: unset;
+    width: 100%;
+  }
+
+  .time {
+    span {
+      display: block;
+      margin-left: -35px;
+    }
+  }
+}

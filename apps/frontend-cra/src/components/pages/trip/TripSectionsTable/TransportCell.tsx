@@ -31,6 +31,8 @@ export const TransportCell: React.FC<TransportCellProps> = ({ data }) => {
   const approachType =
     type === 'road' ? transportType || 'unknown' : placementType || 'unknown';
 
+  console.log(approachType);
+
   return (
     <div className={styles.transport}>
       <div className={styles.icon}>{approachIcons[approachType]}</div>

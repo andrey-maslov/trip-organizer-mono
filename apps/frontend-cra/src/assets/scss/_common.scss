@@ -4,6 +4,19 @@
   overflow: hidden; /* keeps the element from overflowing its parent */
 }
 
+.ant-descriptions {
+
+  .ant-descriptions-header {
+    padding: 10px 10px 0 10px;
+    margin-bottom: 10px;
+  }
+
+  //.ant-descriptions-item-content {
+  //  font-weight: 700;
+  //}
+}
+
+
 @media only screen and (max-width: 576px) {
   .ant-table-tbody > tr > td {
     padding: 4px !important;
