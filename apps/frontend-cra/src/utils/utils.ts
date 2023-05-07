@@ -1,5 +1,5 @@
 import dayjs from 'dayjs';
-import { Payment, Section, Trip } from "@/shared/models";
+import { Payment, Section } from "@/shared/models";
 import { countdownValueType } from 'antd/es/statistic/utils';
 import { isTimeInFuture } from '@/shared/utils';
 import { CheckboxValueType } from "antd/es/checkbox/Group";
@@ -85,13 +85,13 @@ export const swapElements = <T,>(
 };
 
 export const prepareSections = (
-  trip: Trip,
+  sections: Section[],
   filterOptions: CheckboxValueType[]
 ): Section[] => {
-  if (!trip.sections || trip.sections.length === 0) {
+  if (!sections || sections.length === 0) {
     return [];
   }
-  return trip.sections.filter((section) =>
+  return sections.filter((section) =>
     filterOptions.includes(section.type)
   );
 };
@@ -107,7 +107,7 @@ export const getPrice = (payments: Payment[] | null): string => {
 
   const currency = payments[0]?.price?.currency || DEFAULT_CURRENCY;
 
-  return `${paymentTotalAmount}${currency}`
+  return `${paymentTotalAmount} ${currency}`
 }
 
 export const getFormattedDate = (date: string | Date | null | undefined, format = 'DD MMM YYYY'): string => {

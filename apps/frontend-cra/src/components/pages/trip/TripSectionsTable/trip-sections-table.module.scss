@@ -14,6 +14,11 @@ $tableWidth: $nameCellWidth + $transportCellWidth + $startTimeCellWidth +
   $durationCellWidth + $statusCellWidth + $paymentsCellWidth + $priceCellWidth +
   $notesCellWidth + $actionCellWidth;
 
+.tableWrapper {
+  margin-bottom: 20px;
+  overflow-x: scroll;
+}
+
 .table {
   max-width: $tableWidth;
   min-width: $tableWidth;
@@ -149,14 +154,6 @@ $tableWidth: $nameCellWidth + $transportCellWidth + $startTimeCellWidth +
     max-width: unset;
     min-width: 360px;
     border-radius: 0;
-  }
-
-  .row {
-    flex-wrap: wrap;
-
-    &.headerRow {
-      display: none;
-    }
   }
 
   .cell {

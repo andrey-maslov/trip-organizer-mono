@@ -43,6 +43,51 @@ const statusMap: Record<Status, string> = {
   reserved: 'blue',
 };
 
+const renderData = (data: Section) => [
+  {
+    label: 'Status',
+    children: (
+      <Tag color={statusMap[data.status]}>
+        {data.status?.replace('_', ' ') || DEFAULT_SECTION_STATUS}
+      </Tag>
+    ),
+  },
+  {
+    label: 'Transport or placement',
+    children: data.transportType || data.placementType || 'n/d',
+  },
+  {
+    label: 'Start date',
+    children: getFormattedDate(data.dateTimeStart, 'DD MMM YYYY HH:mm'),
+  },
+  {
+    label: 'Duration',
+    children: getHumanizedTimeDuration(data.dateTimeStart, data.dateTimeEnd),
+  },
+  {
+    label: 'Payments',
+    children:
+      data.payments &&
+      data.payments.map((payment, i) =>
+        payment.link ? (
+          <a
+            style={{ display: 'block' }}
+            key={i}
+            href={payment.link}
+            target={'_blank'}
+            rel="noreferrer"
+          >
+            {payment.name || `-`} <FaExternalLinkAlt />
+          </a>
+        ) : (
+          <div key={i}>{payment.name || `-`}</div>
+        )
+      ),
+  },
+  { label: 'Price', children: getPrice(data.payments) },
+  { label: 'Notes', children: data.notes },
+];
+
 export const TripSection = ({ data }: TripSectionProps) => {
   const [isOpened, setOpened] = useState(false);
 
@@ -78,40 +123,17 @@ export const TripSection = ({ data }: TripSectionProps) => {
         !isOpened && style.hidden
       )}
     >
-      <Descriptions.Item className={style.desc} label="Status">
-        <Tag color={statusMap[data.status]}>
-          {data.status?.replace('_', ' ') || DEFAULT_SECTION_STATUS}
-        </Tag>
-      </Descriptions.Item>
-      <Descriptions.Item className={style.desc} label="Transport or placement">
-        {data.transportType || data.placementType || 'n/d'}
-      </Descriptions.Item>
-      <Descriptions.Item className={style.desc} label="Start date">
-        {getFormattedDate(data.dateTimeStart, 'DD MMM YYYY HH:mm')}
-      </Descriptions.Item>
-      <Descriptions.Item className={style.desc} label="Duration">
-        {getHumanizedTimeDuration(data.dateTimeStart, data.dateTimeEnd)}
-      </Descriptions.Item>
-      <Descriptions.Item className={style.desc} label="Payments">
-        {data.payments &&
-          data.payments.map((payment, i) =>
-            payment.link ? (
-              <div key={i}>
-                <a href={payment.link} target={'_blank'} rel="noreferrer">
-                  {payment.name || `-`} <FaExternalLinkAlt />
-                </a>
-              </div>
-            ) : (
-              <div key={i}>{payment.name || `-`}</div>
-            )
-          )}
-      </Descriptions.Item>
-      <Descriptions.Item className={style.desc} label="Price">
-        {getPrice(data.payments)}
-      </Descriptions.Item>
-      {data.notes && (
-        <Descriptions.Item className={style.desc} label="Notes">{data.notes}</Descriptions.Item>
-      )}
+      {renderData(data).map(({ label, children }) => {
+        if (children) {
+          return (
+            <Descriptions.Item key={label} className={style.desc} label={label}>
+              {children}
+            </Descriptions.Item>
+          );
+        } else {
+          return null;
+        }
+      })}
     </Descriptions>
   );
 };

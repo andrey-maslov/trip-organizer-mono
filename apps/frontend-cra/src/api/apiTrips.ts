@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { API } from './api.constants';
-import { Section, Trip } from '@/shared/models';
+import { Trip } from '@/shared/models';
 
 export type Params = {
   name?: number;
@@ -12,7 +12,7 @@ export const fetchTrips = async (params: Params): Promise<Trip[]> => {
   return axios.get(API.TRIPS).then((res) => res.data);
 };
 
-export const fetchOneTrip = async (
+export const getTrip = async (
   id: string,
   query: string
 ): Promise<Trip> => {
@@ -29,15 +29,6 @@ export const updateTrip = async (newTrip: Trip): Promise<Trip> => {
 
 export const removeTrip = async (id: string): Promise<Trip> => {
   return axios.delete(`${API.TRIPS}/${id}`).then((res) => res.data);
-};
-
-export const addTripSection = async (
-  tripId: string,
-  sectionData: Section
-): Promise<Trip> => {
-  return axios
-    .put(`${API.TRIPS}/${tripId}`, sectionData)
-    .then((res) => res.data);
 };
 
 // API health check

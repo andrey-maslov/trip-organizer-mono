@@ -1,29 +1,27 @@
-import React, { useState, FC } from 'react';
+import React, { useState, FC, useEffect } from 'react';
 import {
   Button,
-  Divider,
   Tooltip,
-  Typography,
   Checkbox,
   CheckboxOptionType,
+  Tabs,
+  Empty,
 } from 'antd';
 import type { CheckboxValueType } from 'antd/es/checkbox/Group';
 import {
   TripSectionModal,
   TripSectionValues,
 } from '../TripSectionModal/TripSectionModal';
-import { Section, Trip } from '@/shared/models';
+import { useParams } from 'react-router-dom';
+import { Section } from '@/shared/models';
 import styles from './trip-sections.module.scss';
-import { useMutation, useQueryClient } from 'react-query';
-import { updateTrip } from '../../../../api/apiTrips';
+import { useQueryClient } from 'react-query';
 import { sectionTypesList } from '@/shared/constants';
-import { TripSummary } from '../TripSummary/TripSummary';
 import { TripSectionsTable } from '../TripSectionsTable/TripSectionsTable';
 import { Action } from '../TripSectionsTable/ActionCell';
 import { TripSectionsList } from '../TripSectionsList/TripSectionsList';
-import { prepareSections, swapElements } from "../../../../utils/utils";
+import { prepareSections, swapElements } from '../../../../utils/utils';
 
-const { Title } = Typography;
 const CheckboxGroup = Checkbox.Group;
 
 const sectionTypeOptions = sectionTypesList as unknown as (
@@ -34,19 +32,32 @@ const sectionTypeOptions = sectionTypesList as unknown as (
 const defaultCheckedList = sectionTypeOptions as unknown as CheckboxValueType[];
 
 export type TripSectionsProps = {
-  trip: Trip;
+  sections: Section[];
+  updateTripSections: (sections: Section[]) => void;
 };
 
-export const TripSections: FC<TripSectionsProps> = ({ trip }) => {
+export const TripSections: FC<TripSectionsProps> = ({
+  sections,
+  updateTripSections,
+}) => {
   const queryClient = useQueryClient();
+  const { id } = useParams();
 
-  const [open, setOpen] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [currentSectionId, setCurrentSectionId] = useState('');
   const [checkedList, setCheckedList] =
     useState<CheckboxValueType[]>(defaultCheckedList);
+  const [isUpdatingLoading, setUpdatingLoading] = useState(false);
+
+  useEffect(() => {
+    if (isUpdatingLoading && queryClient.isMutating({ mutationKey: ['trip', id] }) !== 1) {
+      setUpdatingLoading(false);
+      setIsModalOpen(false);
+    }
+  }, [queryClient.isMutating({ mutationKey: ['trip', id] }), isUpdatingLoading]);
 
   // Prepare section to render: add index, filter, etc
-  const data: Section[] = prepareSections(trip, checkedList);
+  const data: Section[] = prepareSections(sections, checkedList);
 
   const onSectionTypeChange = (list: CheckboxValueType[]) => {
     if (list.length === 0) {
@@ -55,112 +66,134 @@ export const TripSections: FC<TripSectionsProps> = ({ trip }) => {
     setCheckedList(list);
   };
 
-  const addSectionMutation = useMutation(updateTrip, {
-    onSuccess: () => {
-      setOpen(false);
-      void queryClient.invalidateQueries(['trip', trip._id]);
-    },
-  });
-
   const onSectionCreateOrUpdate = (values: TripSectionValues) => {
     let newSections: Section[];
 
     if (values._id) {
       // update section case
-      newSections = trip.sections.map((section) =>
+      newSections = sections.map((section) =>
         section._id === values._id ? values : section
       );
     } else {
       // create section case
-      newSections = [...trip.sections, values];
+      newSections = [...sections, values];
     }
-    addSectionMutation.mutate({ ...trip, sections: newSections });
+    updateTripSections(newSections);
+    setUpdatingLoading(true);
   };
 
   const onSectionAction = (id: string, actionType: Action) => {
     if (actionType === 'edit') {
       setCurrentSectionId(id);
-      setOpen(true);
+      setIsModalOpen(true);
     }
 
     if (actionType === 'delete') {
-      const newSections = trip.sections.filter((section) => section._id !== id);
-      addSectionMutation.mutate({ ...trip, sections: newSections });
+      const newSections = sections.filter((section) => section._id !== id);
+      updateTripSections(newSections);
     }
 
     if (actionType === 'moveUp' || actionType === 'moveDown') {
-      const sectionIndex = trip.sections.findIndex(({ _id }) => _id === id);
+      const sectionIndex = sections.findIndex(({ _id }) => _id === id);
       const newSections = swapElements<Section>(
-        trip.sections,
+        sections,
         sectionIndex,
         actionType
       );
 
-      addSectionMutation.mutate({ ...trip, sections: newSections });
+      updateTripSections(newSections);
     }
   };
 
+  if (!data) {
+    return <div>error</div>;
+  }
+
   return (
     <>
-      <div className={styles.tableWrapper}>
-        {trip.sections?.length > 0 && (
-          <>
-            <p>Show types only: </p>
-            <CheckboxGroup
-              options={sectionTypeOptions}
-              value={checkedList}
-              onChange={onSectionTypeChange}
-              className={styles.filter}
-            />
-          </>
-        )}
-
-        {Array.isArray(trip.sections) && trip.sections.length > 0 ? (
-          <TripSectionsList data={data} onAction={onSectionAction} />
-        ) : (
-          <div>
-            You have no details of your journey yet. Add the first trip section
-            clicking a button "+"
-          </div>
-        )}
-      </div>
-
-      <div className={styles.buttons}>
-        <Tooltip title="Add section">
+      {sections.length === 0 ? (
+        <Empty
+          image="https://gw.alipayobjects.com/zos/antfincdn/ZHrcdLPrvN/empty.svg"
+          imageStyle={{ height: 60 }}
+          style={{ marginBottom: '20px' }}
+          description={
+            <div>
+              <div>You have no trip sections</div>
+            </div>
+          }
+        >
           <Button
             type="primary"
-            shape="circle"
             onClick={() => {
               setCurrentSectionId('');
-              setOpen(true);
+              setIsModalOpen(true);
             }}
           >
-            +
+            Create first Now
           </Button>
-        </Tooltip>
-
-        {open && (
-          <TripSectionModal
-            open={open}
-            initialData={
-              trip.sections.filter(
-                (section) => section._id === currentSectionId
-              )[0]
-            }
-            onCreate={onSectionCreateOrUpdate}
-            onCancel={() => {
-              setOpen(false);
-            }}
-            loading={addSectionMutation.isLoading}
+        </Empty>
+      ) : (
+        <>
+          <p>Show types only: </p>
+          <CheckboxGroup
+            options={sectionTypeOptions}
+            value={checkedList}
+            onChange={onSectionTypeChange}
+            className={styles.filter}
           />
-        )}
-      </div>
-      <Divider />
-      {trip.sections?.length > 0 && trip?.summary && (
-        <div>
-          <Title level={4}>Summary</Title>
-          <TripSummary values={trip.summary} />
-        </div>
+
+          <Tabs
+            items={[
+              {
+                label: 'Items',
+                children: (
+                  <TripSectionsList data={data} onAction={onSectionAction} />
+                ),
+              },
+              {
+                label: 'Table',
+                children: (
+                  <TripSectionsTable data={data} onAction={onSectionAction} />
+                ),
+              },
+            ].map(({ label, children }) => {
+              return {
+                label,
+                key: label,
+                children,
+              };
+            })}
+          />
+
+          <div className={styles.buttons}>
+            <Tooltip title="Add section">
+              <Button
+                type="primary"
+                shape="circle"
+                onClick={() => {
+                  setCurrentSectionId('');
+                  setIsModalOpen(true);
+                }}
+              >
+                +
+              </Button>
+            </Tooltip>
+          </div>
+        </>
+      )}
+
+      {isModalOpen && (
+        <TripSectionModal
+          open={isModalOpen}
+          initialData={
+            sections.filter((section) => section._id === currentSectionId)[0]
+          }
+          onFinish={onSectionCreateOrUpdate}
+          onCancel={() => {
+            setIsModalOpen(false);
+          }}
+          loading={queryClient.isMutating({ mutationKey: ['trip', id] }) === 1}
+        />
       )}
     </>
   );

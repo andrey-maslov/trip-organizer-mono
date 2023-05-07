@@ -1,5 +1,5 @@
 import TripSchema from '../schemas/Trip';
-import { getTripSummaryValues } from './TripSummaryService';
+import getTripSummaryService from './TripSummaryService';
 import { GetOneTripParams, Trip } from '@/shared/models';
 
 class TripService {
@@ -12,7 +12,10 @@ class TripService {
       throw new Error('No id');
     }
     const trip: Trip = await TripSchema.findById(id).lean();
-    const summary = await getTripSummaryValues(trip, params.currency);
+    const summary = await getTripSummaryService.getTripSummaryValues(
+      trip,
+      params.currency
+    );
     return { ...trip, summary };
   }
 

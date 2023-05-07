@@ -60,7 +60,7 @@ export type TripSectionValues = Section & { rangeTime?: RangeTime };
 export type TripSectionModalProps = {
   open: boolean;
   initialData?: Section;
-  onCreate: (values: Section) => void;
+  onFinish: (values: Section) => void;
   onCancel: () => void;
   loading?: boolean;
 };
@@ -68,7 +68,7 @@ export type TripSectionModalProps = {
 export const TripSectionModal: React.FC<TripSectionModalProps> = ({
   open,
   initialData,
-  onCreate,
+  onFinish,
   onCancel,
   loading = false,
 }) => {
@@ -97,14 +97,14 @@ export const TripSectionModal: React.FC<TripSectionModalProps> = ({
         const dateTimeEnd = rangeTimeValue?.[1]?.toISOString() || null;
 
         if (initialData?._id) {
-          onCreate({
+          onFinish({
             ...values,
             dateTimeStart,
             dateTimeEnd,
             _id: initialData._id,
           });
         } else {
-          onCreate({ ...values, dateTimeStart, dateTimeEnd });
+          onFinish({ ...values, dateTimeStart, dateTimeEnd });
         }
       })
       .catch((info) => {

@@ -1,31 +1,29 @@
 import React, { useState } from 'react';
-import { useParams, useLocation } from 'react-router-dom';
-import {
-  Button,
-  Divider,
-  Tooltip,
-  Typography,
-  Statistic,
-  Result,
-} from 'antd';
+import { useParams, useSearchParams } from 'react-router-dom';
+import { Button, Typography, Statistic, Result, Card } from 'antd';
 import { TripSections } from './TripSections/TripSections';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
-import { fetchOneTrip, updateTrip } from '../../../api/apiTrips';
-import { Trip } from '@/shared/models';
+import { getTrip, updateTrip } from '../../../api/apiTrips';
+import { Section, Trip } from '@/shared/models';
 import { getHumanizedTimeDuration } from '@/shared/utils';
 import { TripModal } from '../main/TripModal/TripModal';
 import styles from './trip-page.module.scss';
 import { Loader } from '../../shared/loader/Loader';
 import { AxiosError } from 'axios';
 import { getClosesSectionStart, getFormattedData } from '../../../utils/utils';
+import { TripSummary } from './TripSummary/TripSummary';
+import { FiEdit3 } from 'react-icons/fi';
+import { DEFAULT_CURRENCY } from '@/shared/constants';
 
 const { Title, Paragraph } = Typography;
 const { Countdown } = Statistic;
 
 export const TripPage: React.FC = (): JSX.Element => {
   const { id } = useParams();
-  const location = useLocation();
   const queryClient = useQueryClient();
+
+  const [searchParams] = useSearchParams();
+  const currency = searchParams.get('currency') || DEFAULT_CURRENCY;
 
   const [openTripModal, setOpenTripModal] = useState(false);
 
@@ -33,17 +31,25 @@ export const TripPage: React.FC = (): JSX.Element => {
     isLoading,
     error,
     data: trip,
-  } = useQuery<Trip, AxiosError>(['trip', id, location.search], () =>
-    fetchOneTrip(id || '', location.search)
+  } = useQuery<Trip, AxiosError>(['trip', id, currency], () =>
+    getTrip(id || '', `?currency=${currency}`)
   );
 
   // Update journey
   const updateTripMutation = useMutation(updateTrip, {
+    mutationKey: ['trip', id],
     onSuccess: () => {
       setOpenTripModal(false);
       void queryClient.invalidateQueries(['trip', id]);
     },
   });
+
+  const updateTripSections = (newSections: Section[]) => {
+    if (!trip) {
+      return;
+    }
+    updateTripMutation.mutate({ ...trip, sections: newSections });
+  };
 
   if (isLoading) {
     return <Loader />;
@@ -67,7 +73,17 @@ export const TripPage: React.FC = (): JSX.Element => {
 
   return (
     <>
-      <Title>{name}</Title>
+      <Title>
+        {name}
+        <Button
+          className={styles.editTripBtn}
+          type="ghost"
+          icon={<FiEdit3 />}
+          onClick={() => {
+            setOpenTripModal(true);
+          }}
+        ></Button>
+      </Title>
       <Paragraph>{description}</Paragraph>
       <Paragraph className={styles.date}>
         From <strong>{getFormattedData(dateTimeStart)}</strong> to{' '}
@@ -75,26 +91,23 @@ export const TripPage: React.FC = (): JSX.Element => {
         {' => '}
         <span>{getHumanizedTimeDuration(dateTimeStart, dateTimeEnd)}</span>
       </Paragraph>
-      <Tooltip title="Edit journey">
-        <Button
-          type="primary"
-          onClick={() => {
-            setOpenTripModal(true);
-          }}
-        >
-          Edit journey
-        </Button>
-      </Tooltip>
-      <Divider />
+
       {getClosesSectionStart(trip.sections) && (
-        <Countdown
-          title={getClosesSectionStart(trip.sections)?.sectionName}
-          value={getClosesSectionStart(trip.sections)?.countdownValue}
-          format="DD d  HH h  mm"
-        />
+        <Card bordered={false} style={{ width: 200, marginBottom: '20px' }}>
+          <Countdown
+            title={getClosesSectionStart(trip.sections)?.sectionName}
+            value={getClosesSectionStart(trip.sections)?.countdownValue}
+            format="DD d  HH h  mm"
+          />
+        </Card>
       )}
-      <Divider />
-      <TripSections trip={trip} />
+
+      <TripSections
+        sections={trip.sections}
+        updateTripSections={updateTripSections}
+      />
+
+      <TripSummary values={trip.summary} />
 
       {openTripModal ? (
         <TripModal

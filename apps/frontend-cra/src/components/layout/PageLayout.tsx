@@ -4,6 +4,7 @@ import { Spin } from 'antd';
 import styles from './layout.module.scss';
 import { PageHeader } from './PageHeader';
 import { PageFooter } from './PageFooter';
+import { clsx } from "clsx";
 
 const { Content } = Layout;
 
@@ -19,7 +20,7 @@ export const PageLayout: React.FC<PageLayoutProps> = ({
   return (
     <Layout className={styles.layout}>
       <PageHeader />
-      <Content className={styles.content}>
+      <Content className={clsx(styles.content, 'container-fluid')}>
         {loading ? (
           <div className={styles.spinner}>
             <Spin />
