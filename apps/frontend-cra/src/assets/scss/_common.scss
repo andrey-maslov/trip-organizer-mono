@@ -1,3 +1,9 @@
+body {
+  h1 {
+    font-size: 30px;
+  }
+}
+
 .text-ellipsis {
   text-overflow: ellipsis " [..]"; /* enables ellipsis */
   white-space: nowrap; /* keeps the text in a single line */

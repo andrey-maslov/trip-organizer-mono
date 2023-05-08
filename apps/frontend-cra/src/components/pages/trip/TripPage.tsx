@@ -70,10 +70,11 @@ export const TripPage: React.FC = (): JSX.Element => {
   }
 
   const { name, dateTimeStart, dateTimeEnd, description } = trip;
+  const { countdownValue, sectionName } = getClosesSectionStart(trip.sections);
 
   return (
     <>
-      <Title>
+      <h1>
         {name}
         <Button
           className={styles.editTripBtn}
@@ -83,20 +84,20 @@ export const TripPage: React.FC = (): JSX.Element => {
             setOpenTripModal(true);
           }}
         ></Button>
-      </Title>
-      <Paragraph>{description}</Paragraph>
-      <Paragraph className={styles.date}>
+      </h1>
+      <p>{description}</p>
+      <p className={styles.date}>
         From <strong>{getFormattedData(dateTimeStart)}</strong> to{' '}
         <strong>{getFormattedData(dateTimeEnd)}</strong>
         {' => '}
         <span>{getHumanizedTimeDuration(dateTimeStart, dateTimeEnd)}</span>
-      </Paragraph>
+      </p>
 
-      {getClosesSectionStart(trip.sections) && (
+      {countdownValue !== 0 && (
         <Card bordered={false} style={{ width: 200, marginBottom: '20px' }}>
           <Countdown
-            title={getClosesSectionStart(trip.sections)?.sectionName}
-            value={getClosesSectionStart(trip.sections)?.countdownValue}
+            title={sectionName}
+            value={countdownValue}
             format="DD d  HH h  mm"
           />
         </Card>

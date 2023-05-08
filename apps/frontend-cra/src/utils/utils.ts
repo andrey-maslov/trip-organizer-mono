@@ -1,9 +1,9 @@
 import dayjs from 'dayjs';
-import { Payment, Section } from "@/shared/models";
+import { Payment, Section } from '@/shared/models';
 import { countdownValueType } from 'antd/es/statistic/utils';
 import { isTimeInFuture } from '@/shared/utils';
-import { CheckboxValueType } from "antd/es/checkbox/Group";
-import { DEFAULT_CURRENCY } from "@/shared/constants";
+import { CheckboxValueType } from 'antd/es/checkbox/Group';
+import { DEFAULT_CURRENCY } from '@/shared/constants';
 
 export const convertArrayToObject = <T>(
   array: T[],
@@ -31,9 +31,12 @@ export function getFormattedData(
 
 export const getClosesSectionStart = (
   sections: Section[]
-): { sectionName: string; countdownValue: countdownValueType } | null => {
+): { sectionName: string; countdownValue: countdownValueType } => {
   if (!sections || !Array.isArray(sections) || sections.length === 0) {
-    return null;
+    return {
+      sectionName: '',
+      countdownValue: 0,
+    };
   }
 
   let sectionName = '';
@@ -62,7 +65,7 @@ export const getClosesSectionStart = (
   }
 };
 
-export const swapElements = <T,>(
+export const swapElements = <T>(
   array: T[],
   index: number,
   swapType: 'moveUp' | 'moveDown'
@@ -91,29 +94,30 @@ export const prepareSections = (
   if (!sections || sections.length === 0) {
     return [];
   }
-  return sections.filter((section) =>
-    filterOptions.includes(section.type)
-  );
+  return sections.filter((section) => filterOptions.includes(section.type));
 };
 
 export const getPrice = (payments: Payment[] | null): string => {
   if (!payments || !Array.isArray(payments) || payments.length === 0) {
-    return 'n/d'
+    return 'n/d';
   }
 
   const paymentTotalAmount = payments
-      .map((payment) => payment.price?.amount || 0)
-      .reduce((a, b) => a + b)
+    .map((payment) => payment.price?.amount || 0)
+    .reduce((a, b) => a + b);
 
   const currency = payments[0]?.price?.currency || DEFAULT_CURRENCY;
 
-  return `${paymentTotalAmount} ${currency}`
-}
+  return `${paymentTotalAmount} ${currency}`;
+};
 
-export const getFormattedDate = (date: string | Date | null | undefined, format = 'DD MMM YYYY'): string => {
+export const getFormattedDate = (
+  date: string | Date | null | undefined,
+  format = 'DD MMM YYYY'
+): string => {
   if (!dayjs(date).isValid()) {
     return '';
   }
 
-  return dayjs(date).format(format)
-}
+  return dayjs(date).format(format);
+};

@@ -55,7 +55,6 @@ $tableWidth: $nameCellWidth + $transportCellWidth + $startTimeCellWidth +
     padding: 0 10px;
     flex-grow: 1;
     border-right: 1px solid rgba(0, 0, 0, 0.2);
-    //flex-shrink: 0;
 
     &:last-of-type {
       border-right: 0;
@@ -146,25 +145,5 @@ $tableWidth: $nameCellWidth + $transportCellWidth + $startTimeCellWidth +
 
   &:hover {
     border-color: rgba(0, 0, 0, 0.4);
-  }
-}
-
-@media only screen and (max-width: 1000px) {
-  .table {
-    max-width: unset;
-    min-width: 360px;
-    border-radius: 0;
-  }
-
-  .cell {
-    margin-bottom: 20px;
-    width: 30%;
-
-    &:nth-child(1) {
-      min-width: 60%;
-    }
-    &:nth-child(2) {
-      min-width: 40%;
-    }
   }
 }
