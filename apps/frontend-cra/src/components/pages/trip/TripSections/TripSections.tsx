@@ -111,7 +111,7 @@ export const TripSections: FC<TripSectionsProps> = ({
 
   return (
     <>
-      {sections.length === 0 ? (
+      {sections?.length === 0 ? (
         <Empty
           image="https://gw.alipayobjects.com/zos/antfincdn/ZHrcdLPrvN/empty.svg"
           imageStyle={{ height: 60 }}

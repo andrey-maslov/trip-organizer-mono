@@ -20,7 +20,7 @@ export type Trip = {
 export type Section = {
   name: string;
   type: SectionType;
-  points: [GeoPoint];
+  waypoints: Waypoint[];
   dateTimeStart: string | null;
   dateTimeEnd: string | null;
   transportType: TransportType | null;
@@ -32,10 +32,12 @@ export type Section = {
   _id: string;
 };
 
-export type GeoPoint = {
+export type Waypoint = {
   name: string;
-  coords?: string | null;
-  country: string | null;
+  coords?: string[] | null;
+  country?: string | null;
+  description?: string;
+  _id: string;
 };
 
 export type TransportType = typeof transportTypesList[number];

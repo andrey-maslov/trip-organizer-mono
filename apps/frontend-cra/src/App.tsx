@@ -3,6 +3,7 @@ import { Routes, Route } from 'react-router-dom';
 import { MainPage } from './components/pages/main/MainPage';
 import { TripPage } from './components/pages/trip/TripPage';
 import { HealthPage } from './components/pages/health/HealthPage';
+import { WaypointPage } from "./components/pages/waypoint/WaypointPage";
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { ReactQueryDevtools } from 'react-query/devtools';
 import { PageLayout } from './components/layout/PageLayout';
@@ -24,7 +25,8 @@ export function App(): JSX.Element {
       <PageLayout>
         <Routes>
           <Route path="/" element={<MainPage />} />
-          <Route path="trip/:id" element={<TripPage />} />
+          <Route path="trips/:id" element={<TripPage />} />
+          <Route path="waypoints/:id" element={<WaypointPage />} />
           <Route path="/health" element={<HealthPage />} />
           <Route path="*" element={<p>There&apos;s nothing here: 404!</p>} />
         </Routes>

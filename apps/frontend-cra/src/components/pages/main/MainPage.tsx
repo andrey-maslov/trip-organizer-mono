@@ -127,7 +127,7 @@ export const MainPage: React.FC = (): JSX.Element => {
                     ]}
                   >
                     <Meta
-                      title={<NavLink to={`/trip/${_id}`}>{name}</NavLink>}
+                      title={<NavLink to={`/trips/${_id}`}>{name}</NavLink>}
                       description={description}
                     />
                   </Card>

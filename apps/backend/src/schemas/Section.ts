@@ -3,11 +3,12 @@ import { Schema, model } from 'mongoose';
 export const SectionSchema = new Schema({
   name: String,
   type: String,
-  points: [
+  waypoints: [
     {
       name: String,
       coords: String,
       country: String,
+      description: String,
     },
   ],
   dateTimeStart: String,

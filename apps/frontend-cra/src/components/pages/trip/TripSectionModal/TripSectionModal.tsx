@@ -222,8 +222,8 @@ export const TripSectionModal: React.FC<TripSectionModalProps> = ({
         </Row>
 
         {/* GEO Points */}
-        <Paragraph>Geo points</Paragraph>
-        <Form.List name="points">
+        <Paragraph>Waypoints</Paragraph>
+        <Form.List name="waypoints">
           {(fields, { add, remove }) => (
             <>
               {fields.map(({ key, name, ...restField }) => {
@@ -233,7 +233,7 @@ export const TripSectionModal: React.FC<TripSectionModalProps> = ({
                     style={{ display: 'flex', marginBottom: 8 }}
                     align="baseline"
                   >
-                    <span>Point&nbsp;{key + 1}</span>
+                    <span>Waypoint&nbsp;{key + 1}</span>
                     <Form.Item
                       {...restField}
                       name={[name, 'name']}
@@ -254,7 +254,7 @@ export const TripSectionModal: React.FC<TripSectionModalProps> = ({
               })}
               <Form.Item style={{ marginBottom: '10px' }}>
                 <Button type="dashed" onClick={() => add()} block>
-                  + Add geo point
+                  + Add waypoint
                 </Button>
               </Form.Item>
             </>

@@ -44,6 +44,11 @@ class TripSummaryService {
     trip: Trip,
     userCurrency: CurrencyISOName = DEFAULT_CURRENCY
   ): Promise<TripSummaryValues | null> {
+
+    if (!trip) {
+      return null;
+    }
+
     const { sections, dateTimeStart, dateTimeEnd } = trip;
 
     // Firstly get only necessary currency rates data with base currency chosen by user

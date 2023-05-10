@@ -65,7 +65,7 @@ export const TripPage: React.FC = (): JSX.Element => {
     );
   }
 
-  if (!trip) {
+  if (!trip || !trip.sections) {
     return <div>This trip doesn't exist</div>;
   }
 

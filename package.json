@@ -88,6 +88,7 @@
     "react-dom": "18.2.0",
     "react-icons": "^4.7.1",
     "react-query": "^3.39.2",
+    "react-quill": "^2.0.0",
     "react-router-dom": "6.4.3",
     "regenerator-runtime": "0.13.7",
     "sass": "^1.57.0",

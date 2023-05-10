@@ -14,9 +14,9 @@ export const fetchTrips = async (params: Params): Promise<Trip[]> => {
 
 export const getTrip = async (
   id: string,
-  query: string
+  query?: string
 ): Promise<Trip> => {
-  return axios.get(`${API.TRIPS}/${id}${query}`).then((res) => res.data);
+  return axios.get(`${API.TRIPS}/${id}${query || ''}`).then((res) => res.data);
 };
 
 export const createTrip = async (newTrip: Trip): Promise<Trip> => {

@@ -1,4 +1,5 @@
 import { Button, Descriptions, Tag } from 'antd';
+import { Link, useParams } from 'react-router-dom';
 import { PlacementType, Section, Status, TransportType } from '@/shared/models';
 import { clsx } from 'clsx';
 import style from './trip-sections-list.module.scss';
@@ -43,32 +44,32 @@ const statusMap: Record<Status, string> = {
   reserved: 'blue',
 };
 
-const renderData = (data: Section) => [
+const renderData = (section: Section, tripId?: string) => [
   {
     label: 'Status',
     children: (
-      <Tag color={statusMap[data.status]}>
-        {data.status?.replace('_', ' ') || DEFAULT_SECTION_STATUS}
+      <Tag color={statusMap[section.status]}>
+        {section.status?.replace('_', ' ') || DEFAULT_SECTION_STATUS}
       </Tag>
     ),
   },
   {
     label: 'Transport or placement',
-    children: data.transportType || data.placementType || 'n/d',
+    children: section.transportType || section.placementType || 'n/d',
   },
   {
     label: 'Start date',
-    children: getFormattedDate(data.dateTimeStart, 'DD MMM YYYY HH:mm'),
+    children: getFormattedDate(section.dateTimeStart, 'DD MMM YYYY HH:mm'),
   },
   {
     label: 'Duration',
-    children: getHumanizedTimeDuration(data.dateTimeStart, data.dateTimeEnd),
+    children: getHumanizedTimeDuration(section.dateTimeStart, section.dateTimeEnd),
   },
   {
     label: 'Payments',
     children:
-      data.payments &&
-      data.payments.map((payment, i) =>
+      section.payments &&
+      section.payments.map((payment, i) =>
         payment.link ? (
           <a
             style={{ display: 'block' }}
@@ -84,11 +85,22 @@ const renderData = (data: Section) => [
         )
       ),
   },
-  { label: 'Price', children: getPrice(data.payments) },
-  { label: 'Notes', children: data.notes },
+  { label: 'Price', children: getPrice(section.payments) },
+  { label: 'Notes', children: section.notes },
+  {
+    label: 'Waypoints',
+    children:
+      section.waypoints &&
+      section.waypoints.map(({ name, _id }, i) => (
+        <Link style={{ display: 'block' }} key={i} to={`/waypoints/${tripId}?sectionId=${section._id}&waypointId=${_id}`}>
+          {name} <FaExternalLinkAlt />
+        </Link>
+      )),
+  },
 ];
 
 export const TripSection = ({ data }: TripSectionProps) => {
+  const params = useParams();
   const [isOpened, setOpened] = useState(false);
 
   const title = (
@@ -122,8 +134,9 @@ export const TripSection = ({ data }: TripSectionProps) => {
         isNow(data.dateTimeStart, data.dateTimeEnd) && style.current,
         !isOpened && style.hidden
       )}
+      contentStyle={{ minWidth: '100px' }}
     >
-      {renderData(data).map(({ label, children }) => {
+      {renderData(data, params.id).map(({ label, children }) => {
         if (children) {
           return (
             <Descriptions.Item key={label} className={style.desc} label={label}>
