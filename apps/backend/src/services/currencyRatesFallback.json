@@ -1,0 +1,30 @@
+{
+  "USD": {
+    "success": true,
+    "timestamp": 1683701223,
+    "base": "USD",
+    "date": "2023-05-10",
+    "rates": { "EUR": 0.911189, "PLN": 4.149694, "BYN": 2.526436 }
+  },
+  "PLN": {
+    "success": true,
+    "timestamp": 1683701223,
+    "base": "PLN",
+    "date": "2023-05-10",
+    "rates": { "EUR": 0.21958, "USD": 0.240982, "BYN": 0.608825 }
+  },
+  "BYN": {
+    "success": true,
+    "timestamp": 1683701223,
+    "base": "BYN",
+    "date": "2023-05-10",
+    "rates": { "EUR": 0.360662, "USD": 0.395815, "PLN": 1.642509 }
+  },
+  "EUR": {
+    "success": true,
+    "timestamp": 1683701223,
+    "base": "EUR",
+    "date": "2023-05-10",
+    "rates": { "USD": 1.097467, "PLN": 4.55415, "BYN": 2.772679 }
+  }
+}

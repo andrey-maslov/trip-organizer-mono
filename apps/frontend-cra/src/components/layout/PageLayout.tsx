@@ -4,7 +4,7 @@ import { Spin } from 'antd';
 import styles from './layout.module.scss';
 import { PageHeader } from './PageHeader';
 import { PageFooter } from './PageFooter';
-import { clsx } from "clsx";
+import { clsx } from 'clsx';
 
 const { Content } = Layout;
 

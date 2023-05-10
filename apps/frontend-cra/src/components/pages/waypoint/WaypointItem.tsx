@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import { Waypoint } from '@/shared/models';
 import { Button } from 'antd';
 import { FaRegEdit } from 'react-icons/fa';
@@ -29,16 +29,24 @@ export const WaypointItem = (props: WaypointItemProps) => {
           />
           <div
             dangerouslySetInnerHTML={{
-              __html: props.waypoint?.description || 'you have no text here',
+              __html: props.waypoint?.description || '-',
             }}
           />
         </div>
       ) : (
         <>
+          <div style={{ marginBottom: '20px' }}>
+            <Button style={{ marginRight: '10px' }} onClick={() => saveWaypoint()}>
+              Save changes
+            </Button>
+            <Button onClick={() => {
+              setEditMode(false);
+              setRichText(props.waypoint.description ?? '')
+            }}>
+              Discard changes
+            </Button>
+          </div>
           <ReactQuill theme="snow" value={richText} onChange={setRichText} />
-          <Button style={{ marginTop: '20px' }} onClick={() => saveWaypoint()}>
-            Save
-          </Button>
         </>
       )}
     </div>
