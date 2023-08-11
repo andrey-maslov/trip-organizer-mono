@@ -37,9 +37,7 @@ async function startApp() {
   await server.register(cors, {});
 
   try {
-    await mongoose.connect(dbUri, mongooseConnectOptions, () => {
-      console.log('db connected');
-    });
+    await mongoose.connect(dbUri, mongooseConnectOptions);
     server.listen({ port: +PORT, host: '0.0.0.0' }, () =>
       console.log(`Started at port ${PORT}`)
     );

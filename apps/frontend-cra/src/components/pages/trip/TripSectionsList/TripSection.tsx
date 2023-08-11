@@ -139,9 +139,11 @@ export const TripSection = ({ data }: TripSectionProps) => {
       {renderData(data, params.id).map(({ label, children }) => {
         if (children) {
           return (
-            <Descriptions.Item key={label} className={style.desc} label={label}>
-              {children}
-            </Descriptions.Item>
+            <React.Fragment key={label}>
+              <Descriptions.Item className={style.desc} label={label}>
+                {children}
+              </Descriptions.Item>
+            </React.Fragment>
           );
         } else {
           return null;

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useParams, useSearchParams } from 'react-router-dom';
-import { Button, Typography, Statistic, Result, Card } from 'antd';
+import { Button, Statistic, Result, Card } from 'antd';
 import { TripSections } from './TripSections/TripSections';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
 import { getTrip, updateTrip } from '../../../api/apiTrips';
@@ -15,7 +15,6 @@ import { TripSummary } from './TripSummary/TripSummary';
 import { FiEdit3 } from 'react-icons/fi';
 import { DEFAULT_CURRENCY } from '@/shared/constants';
 
-const { Title, Paragraph } = Typography;
 const { Countdown } = Statistic;
 
 export const TripPage: React.FC = (): JSX.Element => {
@@ -32,7 +31,7 @@ export const TripPage: React.FC = (): JSX.Element => {
     error,
     data: trip,
   } = useQuery<Trip, AxiosError>(['trip', id, currency], () =>
-    getTrip(id || '', `?currency=${currency}`)
+    getTrip(id || '', `?currency=${currency}`),
   );
 
   // Update journey
@@ -78,7 +77,7 @@ export const TripPage: React.FC = (): JSX.Element => {
         {name}
         <Button
           className={styles.editTripBtn}
-          type="ghost"
+          type="text"
           icon={<FiEdit3 />}
           onClick={() => {
             setOpenTripModal(true);

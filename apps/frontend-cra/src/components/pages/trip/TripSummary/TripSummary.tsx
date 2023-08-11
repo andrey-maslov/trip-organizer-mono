@@ -24,13 +24,14 @@ export const TripSummary: FC<TripSummaryProps> = ({ values }) => {
   return (
     <Descriptions title="Trip summary" bordered>
       {data.map(({ label, value }) => (
-        <Descriptions.Item
-          contentStyle={{ fontWeight: 700 }}
-          key={label}
-          label={label}
-        >
-          {value}
-        </Descriptions.Item>
+        <React.Fragment key={label}>
+          <Descriptions.Item
+            contentStyle={{ fontWeight: 700 }}
+            label={label}
+          >
+            {value}
+          </Descriptions.Item>
+        </React.Fragment>
       ))}
     </Descriptions>
   );

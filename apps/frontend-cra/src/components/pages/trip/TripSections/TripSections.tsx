@@ -21,6 +21,7 @@ import { TripSectionsTable } from '../TripSectionsTable/TripSectionsTable';
 import { Action } from '../TripSectionsTable/ActionCell';
 import { TripSectionsList } from '../TripSectionsList/TripSectionsList';
 import { prepareSections, swapElements } from '../../../../utils/utils';
+import { SectionsTable } from '../SectionsTable/SectionsTable';
 
 const CheckboxGroup = Checkbox.Group;
 
@@ -50,11 +51,14 @@ export const TripSections: FC<TripSectionsProps> = ({
   const [isUpdatingLoading, setUpdatingLoading] = useState(false);
 
   useEffect(() => {
-    if (isUpdatingLoading && queryClient.isMutating({ mutationKey: ['trip', id] }) !== 1) {
+    if (
+      isUpdatingLoading &&
+      queryClient.isMutating({ mutationKey: ['trip', id] }) !== 1
+    ) {
       setUpdatingLoading(false);
       setIsModalOpen(false);
     }
-  }, [queryClient.isMutating({ mutationKey: ['trip', id] }), isUpdatingLoading]);
+  }, [id, isUpdatingLoading, queryClient]);
 
   // Prepare section to render: add index, filter, etc
   const data: Section[] = prepareSections(sections, checkedList);
@@ -72,7 +76,7 @@ export const TripSections: FC<TripSectionsProps> = ({
     if (values._id) {
       // update section case
       newSections = sections.map((section) =>
-        section._id === values._id ? values : section
+        section._id === values._id ? values : section,
       );
     } else {
       // create section case
@@ -98,7 +102,7 @@ export const TripSections: FC<TripSectionsProps> = ({
       const newSections = swapElements<Section>(
         sections,
         sectionIndex,
-        actionType
+        actionType,
       );
 
       updateTripSections(newSections);
@@ -145,15 +149,18 @@ export const TripSections: FC<TripSectionsProps> = ({
           <Tabs
             items={[
               {
-                label: 'Items',
+                label: 'Table',
                 children: (
-                  <TripSectionsList data={data} onAction={onSectionAction} />
+                  <>
+                    <SectionsTable />
+                    <TripSectionsTable data={data} onAction={onSectionAction} />
+                  </>
                 ),
               },
               {
-                label: 'Table',
+                label: 'Items',
                 children: (
-                  <TripSectionsTable data={data} onAction={onSectionAction} />
+                  <TripSectionsList data={data} onAction={onSectionAction} />
                 ),
               },
             ].map(({ label, children }) => {

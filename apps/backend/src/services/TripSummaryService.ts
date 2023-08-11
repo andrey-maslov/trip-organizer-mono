@@ -26,7 +26,7 @@ const CURRENCY_DATA_FILE_NAME = 'currencyRates.json';
 const CURRENCY_DATA_FILE_PATH = path.join(
   process.cwd(),
   './data/',
-  CURRENCY_DATA_FILE_NAME
+  CURRENCY_DATA_FILE_NAME,
 );
 
 class TripSummaryService {
@@ -42,9 +42,8 @@ class TripSummaryService {
 
   public async getTripSummaryValues(
     trip: Trip,
-    userCurrency: CurrencyISOName = DEFAULT_CURRENCY
+    userCurrency: CurrencyISOName = DEFAULT_CURRENCY,
   ): Promise<TripSummaryValues | null> {
-
     if (!trip) {
       return null;
     }
@@ -53,8 +52,8 @@ class TripSummaryService {
 
     // Firstly get only necessary currency rates data with base currency chosen by user
     const currency = userCurrency.toUpperCase() as CurrencyISOName;
-    const currencyRates =
-      (await this.getCurrencyRates(currency)) || defaultCurrencyRates;
+    const currencyRates = defaultCurrencyRates;
+    // (await this.getCurrencyRates(currency)) || defaultCurrencyRates;
 
     // Init summary values
 
@@ -74,7 +73,7 @@ class TripSummaryService {
           if (payments) {
             payments.forEach(({ price }) => {
               roadCostsList.push(
-                convertAmount(price?.amount, price?.currency, currencyRates)
+                convertAmount(price?.amount, price?.currency, currencyRates),
               );
             });
           }
@@ -92,7 +91,7 @@ class TripSummaryService {
           if (payments) {
             payments.forEach(({ price }) => {
               stayCostsList.push(
-                convertAmount(price?.amount, price?.currency, currencyRates)
+                convertAmount(price?.amount, price?.currency, currencyRates),
               );
             });
           }
@@ -124,7 +123,7 @@ class TripSummaryService {
       stayTimeStr: this.stayTimeStr,
       waitingTimeMs: this.waitingTimeMs,
       waitingTimeStr: getHumanizedTimeDuration(
-        totalTripTime - this.roadTimeMs - this.stayTimeMs
+        totalTripTime - this.roadTimeMs - this.stayTimeMs,
       ),
       totalCost: round(this.roadCost + this.stayCost, 2),
       roadCost: round(this.roadCost, 2),
@@ -134,7 +133,7 @@ class TripSummaryService {
   }
 
   async getCurrencyRates(
-    userCurrency: CurrencyISOName
+    userCurrency: CurrencyISOName,
   ): Promise<CurrencyRates | null> {
     // Check - if we have valid data in file
     const str = await FileService.readFile(CURRENCY_DATA_FILE_PATH);
@@ -143,7 +142,7 @@ class TripSummaryService {
       // Fetch data from API
       logger.info('Need to fetch currency rates');
       const currencyRates = await this.fetchCurrencyRates(
-        this.getCurrencyRatesUrl(userCurrency)
+        this.getCurrencyRatesUrl(userCurrency),
       );
 
       // Asynchronously Get data with all currencies as base to file(
@@ -151,14 +150,14 @@ class TripSummaryService {
         currencyISONameList
           .filter((item) => item !== userCurrency)
           .map((item) =>
-            this.fetchCurrencyRates(this.getCurrencyRatesUrl(item))
-          )
+            this.fetchCurrencyRates(this.getCurrencyRatesUrl(item)),
+          ),
       )
         .then((dataList) => {
           const dataForSave = {};
           // Add previously fetched result for avoid extra request
           [...dataList, currencyRates].forEach(
-            (item) => (dataForSave[item.base] = item)
+            (item) => (dataForSave[item.base] = item),
           );
 
           // Save all rates
@@ -176,7 +175,7 @@ class TripSummaryService {
 
   getCurrencyRatesUrl(
     base: CurrencyISOName = DEFAULT_CURRENCY,
-    currenciesList = currencyISONameList
+    currenciesList = currencyISONameList,
   ): string {
     const currenciesStr = currenciesList
       .filter((curr) => curr !== base)
@@ -209,7 +208,7 @@ class TripSummaryService {
    */
   needToUpdateCurrencyRates(
     data: AllCurrencyRates,
-    expirationDuration = SECONDS_IN_DAY
+    expirationDuration = SECONDS_IN_DAY,
   ): boolean {
     if (!data) {
       return true;
