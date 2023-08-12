@@ -152,7 +152,7 @@ export const TripSections: FC<TripSectionsProps> = ({
                 label: 'Table',
                 children: (
                   <>
-                    <SectionsTable />
+                    <SectionsTable sections={sections} />
                     <TripSectionsTable data={data} onAction={onSectionAction} />
                   </>
                 ),

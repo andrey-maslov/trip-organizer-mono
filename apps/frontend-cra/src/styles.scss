@@ -1,23 +1,50 @@
 /* You can add global styles to this file, and also import other style files */
 
-table {
-  border: 1px solid lightgray;
+html {
+  font-family: sans-serif;
+  font-size: 14px;
 }
 
-tbody {
-  border-bottom: 1px solid lightgray;
+.custom-table-wrapper {
+  table {
+    border: 1px solid lightgray;
+    border-collapse: collapse;
+  }
+
+  tbody {
+    border-bottom: 1px solid lightgray;
+  }
+
+  th {
+    border-bottom: 1px solid lightgray;
+    border-right: 1px solid lightgray;
+    padding: 2px 4px;
+  }
+
+  tr {
+    border-bottom: 2px solid;
+    background: #fff;
+  }
+
+  td {
+    border-right: 1px solid lightgray;
+  }
+
+  td button {
+    padding: 1px 1rem;
+    cursor: grab;
+  }
+
+  td:last-child {
+    border-right: 0;
+  }
+
+  tfoot {
+    color: gray;
+  }
+
+  tfoot th {
+    font-weight: normal;
+  }
 }
 
-th {
-  border-bottom: 1px solid lightgray;
-  border-right: 1px solid lightgray;
-  padding: 2px 4px;
-}
-
-tfoot {
-  color: gray;
-}
-
-tfoot th {
-  font-weight: normal;
-}
