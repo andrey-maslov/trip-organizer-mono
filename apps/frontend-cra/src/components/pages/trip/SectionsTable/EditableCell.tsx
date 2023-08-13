@@ -11,6 +11,8 @@ type Props = {
   updateMyData?: (index: number, id: number, value: string | number) => void;
 };
 
+type InputType = 'text' | 'select' | 'date' | 'dateRange' | 'textarea';
+
 export const EditableCell = ({
   getValue,
   row,
@@ -26,8 +28,6 @@ export const EditableCell = ({
 
   useOnClickOutside(wrapperRef, () => onUpdate());
 
-  // console.log(row.original);
-
   // When the input is blurred, we'll call our table meta's updateData function
   const onUpdate = () => {
     table.options.meta?.updateData(row.index, id, value);
@@ -40,17 +40,37 @@ export const EditableCell = ({
     setValue((initialValue ?? '').toString());
   }, [initialValue]);
 
+  const renderInput = (fieldName: string): React.ReactNode => {
+    switch (true) {
+      case fieldName === 'name':
+        return (
+          <input
+            autoFocus
+            value={value as string}
+            onChange={(e) => setValue(e.target.value)}
+            onBlur={() => {
+              onUpdate();
+            }}
+          />
+        );
+      default:
+        return (
+          <input
+            autoFocus
+            value={value as string}
+            onChange={(e) => setValue(e.target.value)}
+            onBlur={() => {
+              onUpdate();
+            }}
+          />
+        );
+    }
+  };
+
   return (
     <span ref={wrapperRef}>
       {editable ? (
-        <input
-          autoFocus
-          value={value as string}
-          onChange={(e) => setValue(e.target.value)}
-          onBlur={() => {
-            onUpdate();
-          }}
-        />
+        renderInput(id)
       ) : (
         <span
           style={{ display: 'inline-block', width: '100%' }}

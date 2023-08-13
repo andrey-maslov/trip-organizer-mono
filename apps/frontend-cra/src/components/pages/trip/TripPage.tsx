@@ -82,7 +82,7 @@ export const TripPage: React.FC = (): JSX.Element => {
           onClick={() => {
             setOpenTripModal(true);
           }}
-        ></Button>
+        />
       </h1>
       <p>{description}</p>
       <p className={styles.date}>

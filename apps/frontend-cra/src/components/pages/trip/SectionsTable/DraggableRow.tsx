@@ -9,6 +9,11 @@ type Props = {
   reorderRow: (draggedRowIndex: number, targetRowIndex: number) => void;
 };
 
+const firstCell = {
+  display: 'flex',
+  alignItems: 'center',
+};
+
 export const DraggableRow: FC<Props> = ({ row, index, reorderRow }) => {
   const [{ hovered, isOverCurrent }, dropRef] = useDrop({
     accept: 'row',
@@ -40,16 +45,28 @@ export const DraggableRow: FC<Props> = ({ row, index, reorderRow }) => {
         borderWidth: hovered ? '10px' : '1px',
       }}
     >
-      {row.getVisibleCells().map((cell, i) => (
-        <td key={cell.id}>
-          {i === 0 && (
-            <span ref={dropRef}>
-              <button ref={dragRef}>🟰</button>
-            </span>
-          )}
-          {flexRender(cell.column.columnDef.cell, cell.getContext())}
-        </td>
-      ))}
+      {row.getVisibleCells().map((cell, i) => {
+        return (
+          <td key={cell.id} style={i === 0 ? firstCell : {}}>
+            {i === 0 && (
+              <span ref={dropRef}>
+                <button
+                  style={{
+                    backgroundColor: 'transparent',
+                    marginRight: '5px',
+                    border: 0,
+                    cursor: 'grab',
+                  }}
+                  ref={dragRef}
+                >
+                  🟰
+                </button>
+              </span>
+            )}
+            {flexRender(cell.column.columnDef.cell, cell.getContext())}
+          </td>
+        );
+      })}
     </tr>
   );
 };
